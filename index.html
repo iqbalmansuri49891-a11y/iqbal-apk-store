@@ -1,54 +1,38 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <script src="https://pl31189101.profitableratecpmnetwork.com/f4/c2/a0/f4c2a082a8865edb7287f00a916ff819.js"></script>
-
 <meta charset="UTF-8">
-
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Iqbal APK Store - Pure APK Downloader</title>
 <meta name="google-site-verification" content="RILoV3U6eGtTaZfFyxOxFWs_1k3uyeW1TDlV4Q9CAa8" />
-
-
-  
-  
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
     body { background-color: #f4f6f8; color: #1a1a1a; padding-bottom: 70px; }
 
-    /* APKPure Brand Header */
     .apk-navbar { background: #24c373; padding: 12px 16px; color: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
     .nav-top { display: flex; align-items: center; justify-content: space-between; }
     .brand-logo { font-size: 20px; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
     .brand-logo span { background: #fff; color: #24c373; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     .upload-btn { background: #138d4f; color: #fff; border: none; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-    /* Search Bar */
     .nav-search { margin-top: 10px; position: relative; }
     .nav-search input { width: 100%; padding: 10px 14px 10px 38px; border: none; border-radius: 22px; font-size: 13px; outline: none; background: #fff; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
     .search-icon { position: absolute; left: 14px; top: 10px; font-size: 13px; color: #888; }
 
-    /* Banner Section */
     .featured-banner { margin: 12px 16px; border-radius: 12px; background: linear-gradient(135deg, #1fa360, #24c373); color: white; padding: 16px; box-shadow: 0 3px 10px rgba(36,195,115,0.25); }
-    .featured-banner h3 { font-size: 16px; font-weight: 700; }/* Filter Buttons */
-
-
+    .featured-banner h3 { font-size: 16px; font-weight: 700; }
     .featured-banner p { font-size: 12px; opacity: 0.9; margin-top: 4px; }
 
-    /* Category Navigation */
     .apk-tabs { display: flex; gap: 8px; padding: 10px 16px; background: #fff; overflow-x: auto; border-bottom: 1px solid #e8ecef; }
     .tab-pill { border: none; background: #f0f2f5; color: #555; padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; }
     .tab-pill.active { background: #24c373; color: #fff; font-weight: 700; }
 
-    /* Section Title */
     .section-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 16px 8px; }
     .section-header h4 { font-size: 15px; font-weight: 700; color: #222; }
     .section-header span { font-size: 12px; color: #24c373; font-weight: 600; }
 
-    /* APK List (APKPure Style) */
     .app-list { padding: 0 16px; }
     .apk-card { background: #fff; border-radius: 12px; padding: 12px; display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #eaeaea; box-shadow: 0 1px 3px rgba(0,0,0,0.03); cursor: pointer; }
     .apk-icon { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; background: #eee; flex-shrink: 0; }
@@ -64,7 +48,6 @@
     .dl-btn { background: #24c373; color: white; border: none; padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block; }
     .del-btn { background: transparent; border: none; color: #dc3545; font-size: 11px; cursor: pointer; text-decoration: underline; }
 
-    /* Modal / Popup */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; justify-content: center; align-items: center; padding: 16px; }
     .modal-box { background: #fff; width: 100%; max-width: 440px; border-radius: 16px; padding: 20px; max-height: 85vh; overflow-y: auto; }
     .modal-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 14px; }
@@ -75,11 +58,10 @@
 </head>
 <body>
 
-  <!-- APKPure Nav -->
   <header class="apk-navbar">
     <div class="nav-top">
       <div class="brand-logo">APKPure <span>IQBAL</span></div>
-      <button class="upload-btn" onclick="openUploadModal()">+ Submit APK</button>
+      <button class="upload-btn" onclick="checkAdminForUpload()">+ Submit APK</button>
     </div>
     <div class="nav-search">
       <span class="search-icon">🔍</span>
@@ -87,13 +69,11 @@
     </div>
   </header>
 
-  <!-- Banner -->
   <div class="featured-banner">
     <h3>Safe & Fast APK Downloads</h3>
     <p>Direct APK files verified & clean • 100% Free</p>
   </div>
 
-  <!-- Filter Pills -->
   <div class="apk-tabs">
     <button class="tab-pill active" onclick="changeCategory('All', this)">All Apps</button>
     <button class="tab-pill" onclick="changeCategory('Tools', this)">Tools</button>
@@ -105,12 +85,10 @@
     <span id="appCount">0 Apps</span>
   </div>
 
-  <!-- Store Apps List -->
   <div class="app-list" id="appListContainer">
     <p style="text-align: center; color: #777; margin: 30px 0;">Loading APK catalog...</p>
   </div>
 
-  <!-- Details Modal -->
   <div class="modal" id="detailsModal">
     <div class="modal-box">
       <div class="modal-top">
@@ -130,7 +108,6 @@
     </div>
   </div>
 
-  <!-- Submit Modal -->
   <div class="modal" id="uploadModal">
     <div class="modal-box">
       <div class="modal-top">
@@ -161,23 +138,20 @@
 
         <label>Description</label>
         <textarea id="appDesc" rows="3" placeholder="Write description..."></textarea>
-        <!-- UPI Payment Box -->
-<div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 12px; margin: 15px 0; text-align: center;">
-  <p style="margin: 0 0 6px; font-weight: bold; color: #166534; font-size: 14px;">App Publishing Fee: 99</p>
-  <p style="margin: 0 0 10px; font-size: 12px; color: #374151;">Fee pay karke 12-digit UTR/Ref No. darj karein:</p>
-  
-  <a href="upi://pay?pa=9714739355@paytm&pn=Iqbal%20APK%20Store&am=99&cu=INR" 
-     style="display: inline-block; background: #16a34a; color: white; padding: 9px 18px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">
-    Pay 99 via UPI
-  </a>
-</div>
 
-<!-- UTR Reference Input Field -->
-<div style="margin-bottom: 15px; text-align: left;">
-  <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px; color: #333;">Payment UTR / Ref No.</label>
-  <input type="text" id="payTxnId" placeholder="12-digit UTR number" style="width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;" required>
-</div>
+        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 12px; margin: 15px 0; text-align: center;">
+          <p style="margin: 0 0 4px; font-weight: bold; color: #166534; font-size: 14px;">App Publishing Fee: ₹99</p>
+          <p style="margin: 0 0 8px; font-size: 12px; color: #374151;">UPI ID: <b>iqbalelectricplumber@oksbi</b></p>
+          <a href="upi://pay?pa=iqbalelectricplumber@oksbi&pn=Iqbal%20Electric%20Plumber&am=99&cu=INR" 
+             style="display: inline-block; background: #16a34a; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">
+            Pay ₹99 via UPI App
+          </a>
+        </div>
 
+        <div style="margin-bottom: 15px; text-align: left;">
+          <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px; color: #333;">Payment UTR / Ref No.</label>
+          <input type="text" id="payTxnId" placeholder="12-digit UTR number" style="width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;" required>
+        </div>
 
         <button type="submit" class="pub-btn" id="submitBtn">Publish APK</button>
       </form>
@@ -186,10 +160,19 @@
 
   <script>
     const DB_URL = "https://iqbal-app-store-default-rtdb.firebaseio.com/apps";
+    const ADMIN_PASS = "Iqbal @786";
     let appsData = [];
     let currentCat = "All";
 
-    function openUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
+    function checkAdminForUpload() {
+      let pass = prompt("Enter Admin Password to Submit APK:");
+      if (pass === ADMIN_PASS) {
+        document.getElementById('uploadModal').style.display = 'flex';
+      } else if (pass !== null) {
+        alert("Galat Password! Aapko app publish karne ki anumati nahi hai.");
+      }
+    }
+
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     async function loadApps() {
@@ -266,6 +249,12 @@
     }
 
     async function removeApp(id) {
+      let pass = prompt("Enter Admin Password to Delete this App:");
+      if (pass !== ADMIN_PASS) {
+        if (pass !== null) alert("Galat Password! Aap app delete nahi kar sakte.");
+        return;
+      }
+
       if (!confirm("Are you sure you want to remove this APK?")) return;
       await fetch(`${DB_URL}/${id}.json`, { method: 'DELETE' });
       loadApps();
@@ -286,9 +275,7 @@
         category: document.getElementById('appCat').value,
         desc: document.getElementById('appDesc').value,
         timestamp: Date.now(),
-
-          payTxnId: document.getElementById('payTxnId').value.trim(),
-
+        payTxnId: document.getElementById('payTxnId').value.trim(),
       };
 
       await fetch(`${DB_URL}.json`, {
@@ -304,28 +291,7 @@
       loadApps();
     });
 
-    loadApps( );    
-// Search Function
-  function searchApps() {
-    let q = document.getElementById('searchInput').value.toLowerCase();
-    let cards = document.querySelectorAll('.app-card');
-    cards.forEach(card => {
-      let text = card.innerText.toLowerCase();
-      card.style.display = text.includes(q) ? "" : "none";
-    });
-  }
-
-  // Category Filter Function
-  function filterCat(cat, btn) {
-    document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    
-    document.querySelectorAll('.app-card').forEach(card => {
-      let cardCat = card.getAttribute('data-category') || '';
-      card.style.display = (cat === 'all' || cardCat.toLowerCase() === cat.toLowerCase()) ? "" : "none";
-    });
-  }
-
+    loadApps();
   </script>
 </body>
 </html>
