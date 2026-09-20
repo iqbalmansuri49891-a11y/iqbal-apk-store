@@ -164,15 +164,15 @@
             </div>
             <form id="apkForm" onsubmit="publishApp(event)">
                 <label>App Name</label>
-                <input type="text" id="appName" required value="Iqbal Electric Plumber">
+                <input type="text" id="appName" required placeholder="Enter App Name">
                 <label>Developer Name</label>
-                <input type="text" id="appDev" required value="Iqbal Mansuri">
+                <input type="text" id="appDev" required placeholder="Enter Developer Name">
                 <label>App Icon URL</label>
                 <input type="url" id="appIcon" placeholder="https://..." required>
                 <label>Direct APK Download Link</label>
                 <input type="url" id="appLink" required placeholder="https://...">
                 <label>App Size (e.g. 25 MB)</label>
-                <input type="text" id="appSize" required value="15 MB">
+                <input type="text" id="appSize" required placeholder="15 MB">
                 <label>Category</label>
                 <select id="appCat">
                     <option value="Tools">Tools</option>
@@ -180,9 +180,9 @@
                     <option value="Social">Social</option>
                 </select>
                 <label>Description</label>
-                <textarea id="appDesc" rows="3">Best electric plumber service app by Iqbal.</textarea>
+                <textarea id="appDesc" rows="3" placeholder="Write something about app..."></textarea>
                 <label>Admin Password</label>
-                <input type="password" id="payTxnId" required placeholder="Enter password (12345)">
+                <input type="password" id="payTxnId" required placeholder="Enter admin password">
                 <button type="submit" class="submit-final-btn">Publish App</button>
             </form>
         </div>
@@ -190,7 +190,7 @@
 
     <script>
         const DB_URL = "https://iqbal-app-store-default-rtdb.firebaseio.com/apps.json";
-        const ADMIN_PASS = "12345";
+        const ADMIN_PASS = "Iqbal@786";
         let appData = [];
         let currentCategory = 'All';
         let currentOpenAppId = null;
@@ -322,6 +322,7 @@
                 if (res.ok) {
                     alert("App Published Successfully!");
                     closeModal('uploadModal');
+                    document.getElementById('apkForm').reset();
                     loadApps();
                 } else {
                     alert("Failed to publish app.");
