@@ -304,6 +304,26 @@
     });
 
     loadApps();
+    
+    async function incrementDownload(appId) {
+    if (!appId) return;
+    try {
+        const appRefUrl = `https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${appId}/downloads.json`;
+        const res = await fetch(appRefUrl);
+        const currentCount = await res.json() || 0;
+        
+        await fetch(appRefUrl, {
+            method: 'PUT',
+            body: JSON.stringify(currentCount + 1)
+        });
+    } catch (err) {
+        console.error("Error updating download count", err);
+    }
+}
+
+
+
+
   </script>
 </body>
 </html>
