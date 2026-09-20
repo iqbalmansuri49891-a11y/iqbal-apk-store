@@ -317,15 +317,16 @@
             try {
                 let res = await fetch(DB_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newApp)
                 });
                 if (res.ok) {
                     alert("App Published Successfully!");
                     closeModal('uploadModal');
                     document.getElementById('apkForm').reset();
-                    loadApps();
+                    await loadApps();
                 } else {
-                    alert("Failed to publish app.");
+                    alert("Failed to publish app to database.");
                 }
             } catch (err) {
                 alert("Error connecting to database.");
