@@ -4,27 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iqbal APK Store - Pure APK Downloader</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f4f6f8; color: #1a1a1a; padding-bottom: 70px; }
-
-        .apk-navbar { background: #24c373; padding: 12px 16px; color: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .nav-top { display: flex; align-items: center; justify-content: space-between; }
+        body { background-color: #f4f6f8; color: #333; padding-bottom: 70px; }
+        
+        .apk-navbar { background: #24c373; padding: 12px 16px; color: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; }
         .brand-logo { font-size: 20px; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
-        .brand-logo span { background: #fff; color: #24c373; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-        .upload-btn { background: #138d4f; color: #fff; border: none; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .brand-logo span { background: #fff; color: #24c373; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .upload-btn { background: #1b8d4f; color: #fff; border: none; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; }
 
-        .nav-search { margin-top: 10px; position: relative; }
-        .nav-search input { width: 100%; padding: 10px 14px 10px 38px; border: none; border-radius: 22px; font-size: 13px; outline: none; background: #fff; color: #333; }
-        .search-icon { position: absolute; left: 14px; top: 10px; font-size: 13px; color: #888; }
+        .nav-search { margin-top: 10px; position: relative; padding: 0 16px; }
+        .nav-search input { width: 100%; padding: 10px 14px 10px 38px; border: none; border-radius: 22px; font-size: 14px; outline: none; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .search-icon { position: absolute; left: 28px; top: 14px; font-size: 14px; color: #888; }
 
-        .featured-banner { margin: 12px 16px; border-radius: 12px; background: linear-gradient(135deg, #1fa360, #24c373); color: white; padding: 16px; }
+        .featured-banner { margin: 12px 16px; padding: 16px; background: linear-gradient(135deg, #1fa360, #24c373); border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(36,195,115,0.2); }
         .featured-banner h3 { font-size: 16px; font-weight: 700; }
         .featured-banner p { font-size: 12px; opacity: 0.9; margin-top: 4px; }
 
-        .apk-tabs { display: flex; gap: 8px; padding: 10px 16px; background: #fff; overflow-x: auto; border-bottom: 1px solid #f1f3f4; }
-        .tab-pill { border: none; background: #f0f2f5; color: #555; padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .apk-tabs { display: flex; gap: 8px; padding: 10px 16px; background: #fff; overflow-x: auto; border-bottom: 1px solid #eee; }
+        .tab-pill { border: none; background: #f0f2f5; color: #553; padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
         .tab-pill.active { background: #24c373; color: #fff; font-weight: 700; }
 
         .section-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 16px 8px 16px; }
@@ -32,56 +31,60 @@
         .section-header span { font-size: 12px; color: #24c373; font-weight: 600; }
 
         .app-list { padding: 0 16px; }
-        .app-card { background: #fff; border-radius: 12px; padding: 12px; display: flex; align-items: center; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); cursor: pointer; }
-        .apk-icon { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; background: #eee; flex-shrink: 0; }
-        .apk-meta { flex: 1; margin-left: 12px; }
-        .apk-title { font-size: 14px; font-weight: 600; color: #111; line-height: 1.3; }
-        .apk-developer { font-size: 11px; color: #777; margin-top: 2px; }
-        .apk-tags { display: flex; gap: 6px; margin-top: 4px; align-items: center; }
+        .app-card { background: #fff; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); cursor: pointer; }
+        .app-icon { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; background: #eee; flex-shrink: 0; }
+        .apk-meta { flex: 1; min-width: 0; }
+        .apk-title { font-size: 14px; font-weight: 700; color: #111; line-height: 1.3; }
+        .apk-developer { font-size: 12px; color: #777; margin-top: 2px; }
+        .apk-tags { display: flex; gap: 6px; margin-top: 6px; align-items: center; }
         .badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
-        .badge-apk { background: #e8f9f1; color: #24c373; border: 1px solid #b7ecd2; }
-        .badge-size { background: #f1f3f5; color: #666; }
+        .badge-apk { background: #e6f9f1; color: #24c373; border: 1px solid #bfec62; }
+        .badge-size { background: #f1f1f1; color: #666; }
 
         .apk-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
         .dl-btn { background: #24c373; color: white; text-align: center; padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; text-decoration: none; display: inline-block; }
         .del-btn { background: transparent; border: none; color: #dc3545; font-size: 11px; cursor: pointer; text-decoration: underline; }
 
-        /* Modern Play Store / APKPure Details Modal */
-        #detailsModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: flex-end; }
-        .details-content { background: #fff; width: 100%; max-width: 600px; max-height: 90vh; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 24px; overflow-y: auto; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); }
-        .details-header { display: flex; gap: 16px; align-items: center; }
-        .details-icon { width: 80px; height: 80px; border-radius: 18px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .details-title { font-size: 22px; font-weight: 700; color: #202124; }
-        .details-dev { font-size: 14px; color: #01875f; margin-top: 4px; }
-        .details-stats { display: flex; justify-content: space-around; margin: 20px 0; padding: 12px 0; border-top: 1px solid #f1f3f4; border-bottom: 1px solid #f1f3f4; text-align: center; }
-        .stat-box .stat-val { font-size: 15px; font-weight: 700; color: #202124; }
-        .stat-box .stat-label { font-size: 12px; color: #5f6368; margin-top: 2px; }
-        .details-install-btn { display: block; width: 100%; background: #01875f; color: white; text-align: center; padding: 14px; border-radius: 24px; font-size: 16px; font-weight: 600; text-decoration: none; margin: 20px 0; }
-        .details-about-title { font-size: 18px; font-weight: 700; color: #202124; margin-top: 20px; }
-        .details-desc { font-size: 14px; color: #5f6368; line-height: 1.6; margin-top: 8px; }
-        .close-details-btn { float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: #5f6368; }
+        /* Modern Details Modal */
+        #detailsModal { display: none; position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
+        .details-content { background: #fff; width: 100%; max-width: 500px; max-height: 90vh; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; overflow-y: auto; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .details-header { display: flex; gap: 14px; align-items: center; }
+        .details-icon { width: 60px; height: 60px; border-radius: 14px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .details-title { font-size: 18px; font-weight: 700; color: #202124; }
+        .details-dev { font-size: 13px; color: #5f6368; margin-top: 2px; }
+
+        .details-stats { display: flex; gap: 12px; margin: 16px 0; background: #f8f9fa; padding: 12px; border-radius: 12px; text-align: center; }
+        .stat-box { flex: 1; }
+        .stat-val { font-size: 14px; font-weight: 700; color: #202124; }
+        .stat-label { font-size: 11px; color: #5f6368; margin-top: 2px; }
+
+        .details-install-btn { display: block; width: 100%; background: #01875f; color: white; text-align: center; padding: 12px; border-radius: 24px; font-size: 15px; font-weight: 700; text-decoration: none; margin-top: 16px; box-shadow: 0 4px 12px rgba(1,135,95,0.3); }
+        .details-about-title { font-size: 14px; font-weight: 700; color: #202124; margin-top: 20px; }
+        .details-desc { font-size: 13px; color: #5f6368; line-height: 1.6; margin-top: 6px; }
+        .close-details-btn { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: #5f6368; }
 
         /* Upload Modal */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; padding: 16px; }
-        .modal-box { background: #fff; width: 100%; max-width: 440px; border-radius: 16px; padding: 20px; max-height: 85vh; overflow-y: auto; }
-        .modal-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 16px; }
+        #uploadModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
+        .modal-box { background: #fff; width: 100%; max-width: 440px; border-radius: 16px; max-height: 90vh; overflow-y: auto; padding: 20px; }
+        .modal-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 14px; }
         label { font-size: 12px; font-weight: 600; color: #444; margin-top: 10px; display: block; }
-        input, select, textarea { width: 100%; padding: 9px; margin-top: 4px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
-        .pub-btn { width: 100%; padding: 12px; background: #24c373; color: white; border: none; border-radius: 8px; font-weight: 600; margin-top: 16px; cursor: pointer; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; }
+        .pub-btn { width: 100%; padding: 12px; background: #24c373; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; margin-top: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <header class="apk-navbar">
-        <div class="nav-top">
-            <div class="brand-logo">Iqbal Store <span>PURE APK</span></div>
-            <button class="upload-btn" onclick="openModal('uploadModal')">+ Submit APK</button>
-        </div>
-        <div class="nav-search">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search games, apps & more..." oninput="filterApps()">
-        </div>
-    </header>
+    <div class="apk-navbar">
+        <div class="brand-logo">Iqbal Store <span>PURE APK</span></div>
+        <button class="upload-btn" onclick="openModal('uploadModal')">+ Submit APK</button>
+    </div>
+
+    <div class="nav-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search games, apps & more..." oninput="filterApps()">
+    </div>
 
     <div class="featured-banner">
         <h3>Discover Safe Apps</h3>
@@ -100,14 +103,12 @@
         <span id="appCount">0 Apps</span>
     </div>
 
-    <div class="app-list" id="appListContainer">
-        <!-- Apps loaded via JS -->
-    </div>
+    <div class="app-list" id="appList"></div>
 
-    <!-- Modern App Details Modal -->
+    <!-- App Details Modal -->
     <div id="detailsModal">
         <div class="details-content">
-            <button class="close-details-btn" onclick="closeDetails()">&times;</button>
+            <button class="close-details-btn" onclick="closeModal('detailsModal')">&times;</button>
             <div class="details-header">
                 <img id="detailsIcon" class="details-icon" src="" alt="App Icon">
                 <div>
@@ -115,42 +116,46 @@
                     <div id="detailsDev" class="details-dev">Developer</div>
                 </div>
             </div>
-            
+
             <div class="details-stats">
                 <div class="stat-box">
-                    <div id="detailsDownloads" class="stat-val">0+</div>
+                    <div id="detailsDownloads" class="stat-val">0</div>
                     <div class="stat-label">Downloads</div>
                 </div>
                 <div class="stat-box">
-                    <div id="detailsSize" class="stat-val">12 MB</div>
+                    <div id="detailsSize" class="stat-val">15 MB</div>
                     <div class="stat-label">Size</div>
                 </div>
             </div>
 
-            <a id="detailDownloadBtn" href="#" class="details-install-btn" target="_blank" onclick="incrementDownloadFromModal()">Download APK</a>
+            <a id="detailDownloadBtn" href="#" class="details-install-btn" target="_blank" onclick="incrementDownloadFromBox()">Install APK</a>
 
             <div class="details-about-title">About this app</div>
             <div id="detailsDesc" class="details-desc">Fast and direct installable APK file.</div>
+
+            <!-- Payment & Support Section -->
+            <div style="text-align: center; margin: 20px 0 10px 0; padding: 12px; background: #f9f9f9; border-radius: 12px; border: 1px solid #eee;">
+                <h4 style="font-size: 14px; margin-bottom: 5px; color: #333;">Scan & Pay via UPI (9714739355)</h4>
+                <p style="font-size: 12px; color: #666; margin-bottom: 8px;">UPI ID: <b>iqbalelectricplumber-1@okicici</b></p>
+                <img src="https://i.postimg.cc/S2Kc/Google-Pay-QR-6.png" alt="UPI QR Code" style="width: 140px; height: 140px; object-fit: contain;">
+            </div>
         </div>
-<div style="text-align: center; margin: 15px 0; padding: 12px; background: #f9f9f9; border-radius: 10px;">
-    <h4 style="font-size: 14px; margin-bottom: 5px; color: #333;">Scan & Pay via UPI (9714739355)</h4>
-    <p style="font-size: 12px; color: #666; margin-bottom: 8px;">UPI ID: <b>iqbalelectricplumber-1@okicici</b></p>
-    <img src="https://i.postimg.cc/S2Kc/Google-Pay-QR-6.png" alt="UPI QR Code" style="width: 140px; height: 140px; object-fit: contain;">
-</div>
+    </div>
+
     <!-- Upload Modal -->
-    <div id="uploadModal" class="modal">
+    <div id="uploadModal">
         <div class="modal-box">
             <div class="modal-top">
-                <h3>Publish New APK</h3>
-                <button onclick="closeModal('uploadModal')" style="background:none;border:none;font-size:18px;cursor:pointer;">&times;</button>
+                <h3 style="font-size: 16px;">Publish New APK</h3>
+                <button onclick="closeModal('uploadModal')" style="background:none; border:none; font-size:18px; cursor:pointer;">&times;</button>
             </div>
-            <form id="apkForm">
+            <form id="apkForm" onsubmit="publishApp(event)">
                 <label>App Name</label>
                 <input type="text" id="appName" required>
                 <label>Developer Name</label>
                 <input type="text" id="appDev" required>
                 <label>App Icon URL</label>
-                <input type="url" id="appIcon" placeholder="https://...">
+                <input type="url" id="appIcon" placeholder="https://..." required>
                 <label>Direct APK Download Link</label>
                 <input type="url" id="appLink" required placeholder="https://...">
                 <label>App Size (e.g. 25 MB)</label>
@@ -164,8 +169,8 @@
                 <label>Description</label>
                 <textarea id="appDesc" rows="3"></textarea>
                 <label>Admin Password</label>
-                <input type="password" id="payTxnId" required placeholder="Enter password">
-                <button type="submit" class="pub-btn" id="submitBtn">Publish APK</button>
+                <input type="password" id="payTxnId" required placeholder="Enter password (12345)">
+                <button type="submit" class="pub-btn">Publish APK</button>
             </form>
         </div>
     </div>
@@ -186,150 +191,147 @@
                 } else {
                     appData = [];
                 }
-                filterApps();
             } catch (e) {
-                console.error("Error loading apps:", e);
+                appData = [];
             }
-        }
-
-        function setCategory(cat, el) {
-            currentCategory = cat;
-            document.querySelectorAll('.tab-pill').forEach(btn => btn.classList.remove('active'));
-            el.classList.add('active');
             filterApps();
         }
 
         function filterApps() {
             let query = document.getElementById('searchInput').value.toLowerCase();
             let filtered = appData.filter(app => {
-                let matchesCat = (currentCategory === 'All' || app.category === currentCategory);
-                let matchesQuery = (app.name && app.name.toLowerCase().includes(query)) || (app.developer && app.developer.toLowerCase().includes(query));
-                return matchesCat && matchesQuery;
+                let matchCat = currentCategory === 'All' || app.appCat === currentCategory;
+                let matchQuery = app.appName.toLowerCase().includes(query) || app.appDev.toLowerCase().includes(query);
+                return matchCat && matchQuery;
             });
-            document.getElementById('appCount').innerText = `${filtered.length} Apps`;
-            renderApps(filtered);
-        }
 
-        function renderApps(list) {
-            let container = document.getElementById('appListContainer');
-            container.innerHTML = '';
-            if (list.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color:#999; margin-top:30px;">No APKs available right now.</p>`;
+            let listEl = document.getElementById('appList');
+            document.getElementById('appCount').innerText = filtered.length + " Apps";
+            
+            if (filtered.length === 0) {
+                listEl.innerHTML = '<div style="text-align:center; padding:30px; color:#777; font-size:13px;">No apps found</div>';
                 return;
             }
-            list.forEach(app => {
-                let fallback = 'https://via.placeholder.com/60';
-                let icon = (app.icon && app.icon.startsWith('http')) ? app.icon : fallback;
-                let card = document.createElement('div');
-                card.className = 'app-card';
-                card.onclick = () => openDetails(app.id);
-                card.innerHTML = `
-                    <img src="${icon}" class="apk-icon" onerror="this.src='${fallback}'">
+
+            listEl.innerHTML = filtered.map(app => `
+                <div class="app-card" onclick="openDetails('${app.id}')">
+                    <img class="app-icon" src="${app.appIcon || 'https://via.placeholder.com/60'}" alt="">
                     <div class="apk-meta">
-                        <div class="apk-title">${app.name}</div>
-                        <div class="apk-developer">${app.developer || 'Iqbal Mansuri'}</div>
+                        <div class="apk-title">${app.appName}</div>
+                        <div class="apk-developer">${app.appDev}</div>
                         <div class="apk-tags">
                             <span class="badge badge-apk">APK</span>
-                            <span class="badge badge-size">${app.size || '12 MB'}</span>
-                            <span class="badge badge-size">${app.downloads || 0} Downloads</span>
+                            <span class="badge badge-size">${app.appSize || '15 MB'}</span>
+                            <span style="font-size:11px; color:#888;">📥 ${app.downloads || 0}</span>
                         </div>
                     </div>
                     <div class="apk-actions" onclick="event.stopPropagation()">
-                        <a href="${app.apk}" class="dl-btn" target="_blank" onclick="incrementDownload('${app.id}')">Install</a>
-                        <button class="del-btn" onclick="removeApp('${app.id}')">Delete</button>
+                        <a href="${app.appLink}" class="dl-btn" target="_blank" onclick="incrementDownload('${app.id}')">Install</a>
+                        <button class="del-btn" onclick="deleteApp('${app.id}')">Delete</button>
                     </div>
-                `;
-                container.appendChild(card);
-            });
+                </div>
+            `).join('');
+        }
+
+        function setCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterApps();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
         }
 
         function openDetails(id) {
-            let app = appData.find(s => s.id === id);
+            let app = appData.find(a => a.id === id);
             if (!app) return;
             currentOpenAppId = id;
-            let fallback = 'https://via.placeholder.com/80';
-            let icon = (app.icon && app.icon.startsWith('http')) ? app.icon : fallback;
-            document.getElementById('detailsIcon').src = icon;
-            document.getElementById('detailsTitle').innerText = app.name;
-            document.getElementById('detailsDev').innerText = app.developer || 'Iqbal Mansuri';
-            document.getElementById('detailsSize').innerText = app.size || '12 MB';
-            document.getElementById('detailsDownloads').innerText = (app.downloads || 0) + '+';
-            document.getElementById('detailsDesc').innerText = app.desc || 'Fast and direct installable APK file.';
-            let dlBtn = document.getElementById('detailDownloadBtn');
-            dlBtn.href = app.apk;
-            document.getElementById('detailsModal').style.display = 'flex';
+            document.getElementById('detailsIcon').src = app.appIcon || '';
+            document.getElementById('detailsTitle').innerText = app.appName;
+            document.getElementById('detailsDev').innerText = app.appDev;
+            document.getElementById('detailsDownloads').innerText = app.downloads || 0;
+            document.getElementById('detailsSize').innerText = app.appSize || '15 MB';
+            document.getElementById('detailsDesc').innerText = app.appDesc || 'Fast and direct installable APK file.';
+            document.getElementById('detailDownloadBtn').href = app.appLink;
+            openModal('detailsModal');
         }
 
-        function closeDetails() {
-            document.getElementById('detailsModal').style.display = 'none';
-        }
-
-        function incrementDownloadFromModal() {
-            if (currentOpenAppId) {
-                incrementDownload(currentOpenAppId);
-            }
-        }
-
-        async function incrementDownload(appId) {
-            if (!appId) return;
+        async function incrementDownload(id) {
+            let app = appData.find(a => a.id === id);
+            if (!app) return;
+            let newDownloads = (app.downloads || 0) + 1;
             try {
-                let appRefUrl = `https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${appId}/downloads.json`;
-                let res = await fetch(appRefUrl);
-                let currentCount = await res.json() || 0;
-                await fetch(appRefUrl, {
+                await fetch(`https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${id}/downloads.json`, {
                     method: 'PUT',
-                    body: JSON.stringify(currentCount + 1)
+                    body: JSON.stringify(newDownloads)
                 });
-            } catch (err) {
-                console.error("Error updating download count", err);
+            } catch(e) {}
+        }
+
+        async function incrementDownloadFromBox() {
+            if (currentOpenAppId) {
+                await incrementDownload(currentOpenAppId);
             }
         }
 
-        async function removeApp(id) {
-            let pass = prompt("Enter Admin Password to Delete this App:");
+        async function publishApp(e) {
+            e.preventDefault();
+            let pass = document.getElementById('payTxnId').value;
             if (pass !== ADMIN_PASS) {
-                if (pass !== null) alert("Galat Password! Aap app delete nahi kar sakte.");
+                alert("Incorrect Admin Password!");
                 return;
             }
-            if (!confirm("Are you sure you want to remove this APK?")) return;
-            await fetch(`https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${id}.json`, { method: 'DELETE' });
-            loadApps();
-        }
 
-        document.getElementById('apkForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Uploading...";
-            btn.disabled = true;
-
-            const newApp = {
-                name: document.getElementById('appName').value,
-                developer: document.getElementById('appDev').value,
-                icon: document.getElementById('appIcon').value,
-                apk: document.getElementById('appLink').value,
-                size: document.getElementById('appSize').value,
-                category: document.getElementById('appCat').value,
-                desc: document.getElementById('appDesc').value,
-                timestamp: Date.now(),
-                payTxnId: document.getElementById('payTxnId').value.trim(),
+            let newApp = {
+                appName: document.getElementById('appName').value,
+                appDev: document.getElementById('appDev').value,
+                appIcon: document.getElementById('appIcon').value,
+                appLink: document.getElementById('appLink').value,
+                appSize: document.getElementById('appSize').value,
+                appCat: document.getElementById('appCat').value,
+                appDesc: document.getElementById('appDesc').value,
                 downloads: 0
             };
 
-            await fetch(DB_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newApp)
-            });
+            try {
+                let res = await fetch(DB_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(newApp)
+                });
+                if (res.ok) {
+                    alert("App Published Successfully!");
+                    closeModal('uploadModal');
+                    document.getElementById('apkForm').reset();
+                    loadApps();
+                } else {
+                    alert("Failed to publish app.");
+                }
+            } catch (err) {
+                alert("Error connecting to database.");
+            }
+        }
 
-            document.getElementById('apkForm').reset();
-            closeModal('uploadModal');
-            btn.innerText = "Publish APK";
-            btn.disabled = false;
-            loadApps();
-        });
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        async function deleteApp(id) {
+            let pass = prompt("Enter Admin Password to delete:");
+            if (pass !== ADMIN_PASS) {
+                if (pass !== null) alert("Incorrect Password!");
+                return;
+            }
+            try {
+                let res = await fetch(`https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${id}.json`, {
+                    method: 'DELETE'
+                });
+                if (res.ok) {
+                    loadApps();
+                }
+            } catch (e) {}
+        }
 
         loadApps();
     </script>
