@@ -285,6 +285,7 @@
         desc: document.getElementById('appDesc').value,
         timestamp: Date.now(),
         payTxnId: document.getElementById('payTxnId').value.trim(),
+        downloads: 0
       };
 
       await fetch(`${DB_URL}.json`, {
