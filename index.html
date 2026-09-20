@@ -3,158 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iqbal APK Store - Pure APK Downloader</title>
+    <title>Iqbal App Store - Google Play Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f4f6f8; color: #333; padding-bottom: 70px; }
+        body { background-color: #f8f9fa; color: #202124; padding-bottom: 80px; }
         
-        .apk-navbar { background: #24c373; padding: 12px 16px; color: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; }
-        .brand-logo { font-size: 20px; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
-        .brand-logo span { background: #fff; color: #24c373; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
-        .upload-btn { background: #1b8d4f; color: #fff; border: none; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; }
+        .play-navbar { background: #ffffff; padding: 12px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; }
+        .brand-box { display: flex; align-items: center; gap: 8px; }
+        .brand-logo { font-size: 19px; font-weight: 700; color: #1a73e8; }
+        .submit-apk-btn { background: #1a73e8; color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
 
-        .nav-search { margin-top: 10px; position: relative; padding: 0 16px; }
-        .nav-search input { width: 100%; padding: 10px 14px 10px 38px; border: none; border-radius: 22px; font-size: 14px; outline: none; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-        .search-icon { position: absolute; left: 28px; top: 14px; font-size: 14px; color: #888; }
+        .search-bar-container { margin: 12px 16px; position: relative; }
+        .search-bar-container input { width: 100%; padding: 12px 16px 12px 45px; border: 1px solid #dadce0; border-radius: 24px; font-size: 14px; outline: none; background: #f1f3f4; }
+        .search-bar-container input:focus { background: #fff; border-color: #1a73e8; box-shadow: 0 1px 6px rgba(32,33,36,0.28); }
+        .s-icon { position: absolute; left: 16px; top: 14px; color: #5f6368; font-size: 16px; }
 
-        .featured-banner { margin: 12px 16px; padding: 16px; background: linear-gradient(135deg, #1fa360, #24c373); border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(36,195,115,0.2); }
-        .featured-banner h3 { font-size: 16px; font-weight: 700; }
-        .featured-banner p { font-size: 12px; opacity: 0.9; margin-top: 4px; }
+        .chips-container { display: flex; gap: 8px; padding: 6px 16px; background: #fff; overflow-x: auto; border-bottom: 1px solid #e8eaed; }
+        .chip { border: 1px solid #dadce0; background: #fff; color: #3c4043; padding: 6px 16px; border-radius: 16px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+        .chip.active { background: #e8f0fe; color: #1a73e8; border-color: #d2e3fc; font-weight: 600; }
 
-        .apk-tabs { display: flex; gap: 8px; padding: 10px 16px; background: #fff; overflow-x: auto; border-bottom: 1px solid #eee; }
-        .tab-pill { border: none; background: #f0f2f5; color: #553; padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
-        .tab-pill.active { background: #24c373; color: #fff; font-weight: 700; }
-
-        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 16px 8px 16px; }
-        .section-header h4 { font-size: 15px; font-weight: 700; color: #222; }
-        .section-header span { font-size: 12px; color: #24c373; font-weight: 600; }
+        .section-title { display: flex; justify-content: space-between; align-items: center; padding: 16px 16px 8px 16px; }
+        .section-title h4 { font-size: 16px; font-weight: 700; color: #202124; }
+        .section-title span { font-size: 12px; color: #1a73e8; font-weight: 600; }
 
         .app-list { padding: 0 16px; }
-        .app-card { background: #fff; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); cursor: pointer; }
-        .app-icon { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; background: #eee; flex-shrink: 0; }
-        .apk-meta { flex: 1; min-width: 0; }
-        .apk-title { font-size: 14px; font-weight: 700; color: #111; line-height: 1.3; }
-        .apk-developer { font-size: 12px; color: #777; margin-top: 2px; }
-        .apk-tags { display: flex; gap: 6px; margin-top: 6px; align-items: center; }
-        .badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
-        .badge-apk { background: #e6f9f1; color: #24c373; border: 1px solid #bfec62; }
-        .badge-size { background: #f1f1f1; color: #666; }
+        .play-card { background: #fff; border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 14px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(60,64,67,0.3); cursor: pointer; }
+        .app-icon { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; background: #f1f3f4; flex-shrink: 0; }
+        .app-info { flex: 1; min-width: 0; }
+        .app-name { font-size: 15px; font-weight: 600; color: #202124; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .app-dev { font-size: 13px; color: #5f6368; margin-top: 2px; }
+        .app-metrics { display: flex; gap: 8px; margin-top: 6px; align-items: center; font-size: 12px; color: #5f6368; }
+        .rating-badge { color: #202124; font-weight: 600; }
 
-        .apk-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-        .dl-btn { background: #24c373; color: white; text-align: center; padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; text-decoration: none; display: inline-block; }
-        .del-btn { background: transparent; border: none; color: #dc3545; font-size: 11px; cursor: pointer; text-decoration: underline; }
+        .app-action-box { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+        .install-pill { background: #1a73e8; color: white; padding: 6px 18px; border-radius: 16px; font-size: 13px; font-weight: 600; text-decoration: none; }
+        .delete-link { background: none; border: none; color: #d93025; font-size: 11px; cursor: pointer; font-weight: 500; }
 
-        /* Modern Details Modal */
-        #detailsModal { display: none; position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
-        .details-content { background: #fff; width: 100%; max-width: 500px; max-height: 90vh; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; overflow-y: auto; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); animation: slideUp 0.3s ease-out; }
+        /* Bottom Play Store Navigation Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #e8eaed; z-index: 150; }
+        .nav-item { text-align: center; color: #5f6368; font-size: 11px; cursor: pointer; font-weight: 500; text-decoration: none; flex: 1; }
+        .nav-item.active { color: #1a73e8; font-weight: 700; }
+        .nav-item div { font-size: 18px; margin-bottom: 2px; }
+
+        /* Google Play Style Details Modal */
+        #detailsModal { display: none; position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200; justify-content: center; align-items: flex-end; }
+        .details-content { background: #fff; width: 100%; max-width: 500px; max-height: 90vh; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 24px; overflow-y: auto; box-shadow: 0 -4px 25px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .details-header { display: flex; gap: 14px; align-items: center; }
-        .details-icon { width: 60px; height: 60px; border-radius: 14px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .details-title { font-size: 18px; font-weight: 700; color: #202124; }
-        .details-dev { font-size: 13px; color: #5f6368; margin-top: 2px; }
+        .modal-header-flex { display: flex; gap: 16px; align-items: center; }
+        .modal-icon { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; }
+        .modal-title { font-size: 20px; font-weight: 700; color: #202124; }
+        .modal-dev { font-size: 14px; color: #1a73e8; margin-top: 2px; font-weight: 500; }
 
-        .details-stats { display: flex; gap: 12px; margin: 16px 0; background: #f8f9fa; padding: 12px; border-radius: 12px; text-align: center; }
-        .stat-box { flex: 1; }
-        .stat-val { font-size: 14px; font-weight: 700; color: #202124; }
-        .stat-label { font-size: 11px; color: #5f6368; margin-top: 2px; }
+        .play-stats-bar { display: flex; justify-content: space-around; margin: 20px 0; padding: 12px 0; border-top: 1px solid #f1f3f4; border-bottom: 1px solid #f1f3f4; text-align: center; }
+        .p-box { flex: 1; border-right: 1px solid #f1f3f4; }
+        .p-box:last-child { border-right: none; }
+        .p-num { font-size: 15px; font-weight: 700; color: #202124; }
+        .p-txt { font-size: 11px; color: #5f6368; margin-top: 3px; }
 
-        .details-install-btn { display: block; width: 100%; background: #01875f; color: white; text-align: center; padding: 12px; border-radius: 24px; font-size: 15px; font-weight: 700; text-decoration: none; margin-top: 16px; box-shadow: 0 4px 12px rgba(1,135,95,0.3); }
-        .details-about-title { font-size: 14px; font-weight: 700; color: #202124; margin-top: 20px; }
-        .details-desc { font-size: 13px; color: #5f6368; line-height: 1.6; margin-top: 6px; }
-        .close-details-btn { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: #5f6368; }
+        .modal-install-btn { display: block; width: 100%; background: #1a73e8; color: white; text-align: center; padding: 14px; border-radius: 28px; font-size: 16px; font-weight: 600; text-decoration: none; margin-top: 16px; box-shadow: 0 2px 6px rgba(26,115,232,0.3); }
+        .modal-desc-title { font-size: 16px; font-weight: 700; color: #202124; margin-top: 24px; }
+        .modal-desc-text { font-size: 14px; color: #5f6368; line-height: 1.6; margin-top: 8px; }
+        .close-btn { float: right; background: #f1f3f4; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; color: #5f6368; display: flex; align-items: center; justify-content: center; }
 
-        /* Upload Modal */
-        #uploadModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-end; }
-        .modal-box { background: #fff; width: 100%; max-width: 440px; border-radius: 16px; max-height: 90vh; overflow-y: auto; padding: 20px; }
-        .modal-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 14px; }
-        label { font-size: 12px; font-weight: 600; color: #444; margin-top: 10px; display: block; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; }
-        .pub-btn { width: 100%; padding: 12px; background: #24c373; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; margin-top: 16px; cursor: pointer; }
+        /* Submit APK Modal */
+        #uploadModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; justify-content: center; align-items: flex-end; }
+        .upload-box { background: #fff; width: 100%; max-width: 460px; border-top-left-radius: 24px; border-top-right-radius: 24px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+        .upload-top-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8eaed; padding-bottom: 12px; margin-bottom: 16px; }
+        label { font-size: 12px; font-weight: 600; color: #5f6368; margin-top: 12px; display: block; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 4px; border: 1px solid #dadce0; border-radius: 8px; font-size: 14px; outline: none; background: #fff; }
+        .submit-final-btn { width: 100%; padding: 14px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; margin-top: 20px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
-    <div class="apk-navbar">
-        <div class="brand-logo">Iqbal Store <span>PURE APK</span></div>
-        <button class="upload-btn" onclick="openModal('uploadModal')">+ Submit APK</button>
+    <div class="play-navbar">
+        <div class="brand-box">
+            <span style="font-size: 20px;">⚡</span>
+            <div class="brand-logo">Iqbal App Store</div>
+        </div>
+        <button class="submit-apk-btn" onclick="openModal('uploadModal')">+ Submit APK</button>
     </div>
 
-    <div class="nav-search">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search games, apps & more..." oninput="filterApps()">
+    <div class="search-bar-container">
+        <span class="s-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search apps & games" oninput="filterApps()">
     </div>
 
-    <div class="featured-banner">
-        <h3>Discover Safe Apps</h3>
-        <p>Direct & secure APK downloads verified for your device.</p>
+    <div class="chips-container">
+        <button class="chip active" onclick="setCategory('All', this)">For you</button>
+        <button class="chip" onclick="setCategory('Games', this)">Games</button>
+        <button class="chip" onclick="setCategory('Tools', this)">Tools</button>
+        <button class="chip" onclick="setCategory('Social', this)">Social</button>
     </div>
 
-    <div class="apk-tabs">
-        <button class="tab-pill active" onclick="setCategory('All', this)">All Apps</button>
-        <button class="tab-pill" onclick="setCategory('Games', this)">Games</button>
-        <button class="tab-pill" onclick="setCategory('Tools', this)">Tools</button>
-        <button class="tab-pill" onclick="setCategory('Social', this)">Social</button>
-    </div>
-
-    <div class="section-header">
-        <h4 id="sectionTitle">Trending Apps</h4>
+    <div class="section-title">
+        <h4 id="sectionTitle">Suggested for you</h4>
         <span id="appCount">0 Apps</span>
     </div>
 
     <div class="app-list" id="appList"></div>
 
+    <!-- Bottom Play Store Navigation Bar -->
+    <div class="bottom-nav">
+        <a class="nav-item" onclick="setCategory('Games', document.querySelectorAll('.chip')[1])">
+            <div>🎮</div>Games
+        </a>
+        <a class="nav-item active">
+            <div>⭐</div>Apps
+        </a>
+        <a class="nav-item" onclick="document.getElementById('searchInput').focus()">
+            <div>🔍</div>Search
+        </a>
+        <a class="nav-item" onclick="openModal('uploadModal')">
+            <div>👤</div>Submit
+        </a>
+    </div>
+
     <!-- App Details Modal -->
     <div id="detailsModal">
         <div class="details-content">
-            <button class="close-details-btn" onclick="closeModal('detailsModal')">&times;</button>
-            <div class="details-header">
-                <img id="detailsIcon" class="details-icon" src="" alt="App Icon">
+            <button class="close-btn" onclick="closeModal('detailsModal')">&times;</button>
+            <div class="modal-header-flex">
+                <img id="detailsIcon" class="modal-icon" src="" alt="Icon">
                 <div>
-                    <div id="detailsTitle" class="details-title">App Name</div>
-                    <div id="detailsDev" class="details-dev">Developer</div>
+                    <div id="detailsTitle" class="modal-title">App Name</div>
+                    <div id="detailsDev" class="modal-dev">Developer</div>
                 </div>
             </div>
 
-            <div class="details-stats">
-                <div class="stat-box">
-                    <div id="detailsDownloads" class="stat-val">0</div>
-                    <div class="stat-label">Downloads</div>
+            <div class="play-stats-bar">
+                <div class="p-box">
+                    <div class="p-num">4.5 ★</div>
+                    <div class="p-txt">1M+ reviews</div>
                 </div>
-                <div class="stat-box">
-                    <div id="detailsSize" class="stat-val">15 MB</div>
-                    <div class="stat-label">Size</div>
+                <div class="p-box">
+                    <div class="p-num" id="detailsDownloads">10K+</div>
+                    <div class="p-txt">Downloads</div>
+                </div>
+                <div class="p-box">
+                    <div class="p-num" id="detailsSize">15 MB</div>
+                    <div class="p-txt">Rated for 18+</div>
                 </div>
             </div>
 
-            <a id="detailDownloadBtn" href="#" class="details-install-btn" target="_blank" onclick="incrementDownloadFromBox()">Install APK</a>
+            <a id="detailDownloadBtn" href="#" class="modal-install-btn" target="_blank" onclick="incrementDownloadFromBox()">Install</a>
 
-            <div class="details-about-title">About this app</div>
-            <div id="detailsDesc" class="details-desc">Fast and direct installable APK file.</div>
+            <div class="modal-desc-title">About this app</div>
+            <div id="detailsDesc" class="modal-desc-text">Fast and direct installable APK file.</div>
         </div>
     </div>
 
-    <!-- Upload Modal with Direct UPI Pay ₹99 Button -->
+    <!-- Upload Modal -->
     <div id="uploadModal">
-        <div class="modal-box">
-            <div class="modal-top">
-                <h3 style="font-size: 16px;">Publish New APK</h3>
-                <button onclick="closeModal('uploadModal')" style="background:none; border:none; font-size:18px; cursor:pointer;">&times;</button>
+        <div class="upload-box">
+            <div class="upload-top-flex">
+                <h3 style="font-size: 18px; font-weight: 600;">Publish New APK</h3>
+                <button onclick="closeModal('uploadModal')" style="background:none; border:none; font-size:20px; cursor:pointer; color:#5f6368;">&times;</button>
             </div>
-
-            <!-- Direct UPI Payment Banner for ₹99 (No broken images) -->
-            <div style="text-align: center; margin-bottom: 15px; padding: 14px; background: #e8f5e9; border-radius: 12px; border: 1px solid #c8e6c9;">
-                <h4 style="font-size: 14px; margin-bottom: 4px; color: #2e7d32;">Pay ₹99 Listing Fee</h4>
-                <p style="font-size: 12px; color: #555; margin-bottom: 8px;">UPI ID: <b>iqbalelectricplumber-1@okicici</b></p>
-                <a href="upi://pay?pa=iqbalelectricplumber-1@okicici&pn=IqbalElectricPlumber&am=99.00&cu=INR" style="display: inline-block; background: #24c373; color: white; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Pay ₹99 via UPI App</a>
-            </div>
-
             <form id="apkForm" onsubmit="publishApp(event)">
                 <label>App Name</label>
-                <input type="text" id="appName" required>
+                <input type="text" id="appName" required value="Iqbal Electric Plumber">
                 <label>Developer Name</label>
-                <input type="text" id="appDev" required>
+                <input type="text" id="appDev" required value="Iqbal Mansuri">
                 <label>App Icon URL</label>
                 <input type="url" id="appIcon" placeholder="https://..." required>
                 <label>Direct APK Download Link</label>
@@ -163,15 +175,15 @@
                 <input type="text" id="appSize" required value="15 MB">
                 <label>Category</label>
                 <select id="appCat">
-                    <option value="Games">Games</option>
                     <option value="Tools">Tools</option>
+                    <option value="Games">Games</option>
                     <option value="Social">Social</option>
                 </select>
                 <label>Description</label>
-                <textarea id="appDesc" rows="3"></textarea>
+                <textarea id="appDesc" rows="3">Best electric plumber service app by Iqbal.</textarea>
                 <label>Admin Password</label>
                 <input type="password" id="payTxnId" required placeholder="Enter password (12345)">
-                <button type="submit" class="pub-btn">Publish APK</button>
+                <button type="submit" class="submit-final-btn">Publish App</button>
             </form>
         </div>
     </div>
@@ -210,25 +222,27 @@
             document.getElementById('appCount').innerText = filtered.length + " Apps";
             
             if (filtered.length === 0) {
-                listEl.innerHTML = '<div style="text-align:center; padding:30px; color:#777; font-size:13px;">No apps found</div>';
+                listEl.innerHTML = '<div style="text-align:center; padding:40px; color:#5f6368; font-size:14px;">No apps found</div>';
                 return;
             }
 
             listEl.innerHTML = filtered.map(app => `
-                <div class="app-card" onclick="openDetails('${app.id}')">
+                <div class="play-card" onclick="openDetails('${app.id}')">
                     <img class="app-icon" src="${app.appIcon || 'https://via.placeholder.com/60'}" alt="">
-                    <div class="apk-meta">
-                        <div class="apk-title">${app.appName}</div>
-                        <div class="apk-developer">${app.appDev}</div>
-                        <div class="apk-tags">
-                            <span class="badge badge-apk">APK</span>
-                            <span class="badge badge-size">${app.appSize || '15 MB'}</span>
-                            <span style="font-size:11px; color:#888;">📥 ${app.downloads || 0}</span>
+                    <div class="app-info">
+                        <div class="app-name">${app.appName}</div>
+                        <div class="app-dev">${app.appDev}</div>
+                        <div class="app-metrics">
+                            <span class="rating-badge">4.5 ★</span>
+                            <span>•</span>
+                            <span>${app.appSize || '15 MB'}</span>
+                            <span>•</span>
+                            <span>📥 ${app.downloads || 0}</span>
                         </div>
                     </div>
-                    <div class="apk-actions" onclick="event.stopPropagation()">
-                        <a href="${app.appLink}" class="dl-btn" target="_blank" onclick="incrementDownload('${app.id}')">Install</a>
-                        <button class="del-btn" onclick="deleteApp('${app.id}')">Delete</button>
+                    <div class="app-action-box" onclick="event.stopPropagation()">
+                        <a href="${app.appLink}" class="install-pill" target="_blank" onclick="incrementDownload('${app.id}')">Install</a>
+                        <button class="delete-link" onclick="deleteApp('${app.id}')">Delete</button>
                     </div>
                 </div>
             `).join('');
@@ -236,8 +250,8 @@
 
         function setCategory(cat, btn) {
             currentCategory = cat;
-            document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
             filterApps();
         }
 
@@ -256,7 +270,7 @@
             document.getElementById('detailsIcon').src = app.appIcon || '';
             document.getElementById('detailsTitle').innerText = app.appName;
             document.getElementById('detailsDev').innerText = app.appDev;
-            document.getElementById('detailsDownloads').innerText = app.downloads || 0;
+            document.getElementById('detailsDownloads').innerText = (app.downloads || 0) + "+";
             document.getElementById('detailsSize').innerText = app.appSize || '15 MB';
             document.getElementById('detailsDesc').innerText = app.appDesc || 'Fast and direct installable APK file.';
             document.getElementById('detailDownloadBtn').href = app.appLink;
@@ -268,7 +282,7 @@
             if (!app) return;
             let newDownloads = (app.downloads || 0) + 1;
             try {
-                let res = await fetch(`https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${id}/downloads.json`, {
+                await fetch(`https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${id}/downloads.json`, {
                     method: 'PUT',
                     body: JSON.stringify(newDownloads)
                 });
@@ -308,7 +322,6 @@
                 if (res.ok) {
                     alert("App Published Successfully!");
                     closeModal('uploadModal');
-                    document.getElementById('apkForm').reset();
                     loadApps();
                 } else {
                     alert("Failed to publish app.");
