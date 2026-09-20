@@ -197,7 +197,7 @@
 
         async function loadApps() {
             try {
-                let res = await fetch(DB_URL);
+                let res = await fetch(DB_URL, { cache: 'no-store' });
                 let data = await res.json();
                 if (data) {
                     appData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
@@ -284,6 +284,7 @@
             try {
                 await fetch(`https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${id}/downloads.json`, {
                     method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newDownloads)
                 });
             } catch(e) {}
@@ -326,7 +327,7 @@
                     document.getElementById('apkForm').reset();
                     await loadApps();
                 } else {
-                    alert("Failed to publish app to database.");
+                    alert("Failed to publish app.");
                 }
             } catch (err) {
                 alert("Error connecting to database.");
