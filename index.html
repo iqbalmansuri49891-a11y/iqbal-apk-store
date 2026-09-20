@@ -361,14 +361,38 @@
 
     function openDetails(id) {
       const app = appsData.find(a => a.id === id);
-      if (!app) return;
-      document.getElementById('detailImg').src = app.icon || 'https://via.placeholder.com/64';
-      document.getElementById('detailTitle').innerText = app.name;
-      document.getElementById('detailDev').innerText = app.developer || 'Iqbal Mansuri';
-      document.getElementById('detailDesc').innerText = app.desc || 'Fast and direct installable APK file.';
-      document.getElementById('detailDownload').href = app.apk;
-      document.getElementById('detailsModal').style.display = 'flex';
+    let currentOpenAppId = null;
+
+function openDetails(id) {
+    const app = appsData.find(a => a.id === id);
+    if (!app) return;
+    
+    currentOpenAppId = id;
+    let fallback = 'https://via.placeholder.com/80';
+    let icon = (app.icon && app.icon.startsWith('http')) ? app.icon : fallback;
+
+    document.getElementById('detailImg').src = icon;
+    document.getElementById('detailTitle').innerText = app.name;
+    document.getElementById('detailDev').innerText = app.developer || 'Iqbal Mansuri';
+    document.getElementById('detailSize').innerText = app.size || '12 MB';
+    document.getElementById('detailDownloads').innerText = (app.downloads || 0) + '+';
+    document.getElementById('detailDesc').innerText = app.desc || 'Fast and direct installable APK File.';
+    
+    const dlBtn = document.getElementById('detailDownloadBtn');
+    dlBtn.href = app.apk;
+
+    document.getElementById('detailsModal').style.display = 'flex';
+}
+
+function closeDetails() {
+    document.getElementById('detailsModal').style.display = 'none';
+}
+
+function incrementDownloadFromModal() {
+    if (currentOpenAppId) {
+        incrementDownload(currentOpenAppId);
     }
+}
 
     async function removeApp(id) {
       let pass = prompt("Enter Admin Password to Delete this App:");
