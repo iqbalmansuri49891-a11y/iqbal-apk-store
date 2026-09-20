@@ -192,24 +192,41 @@
     <p style="text-align: center; color: #777; margin: 30px 0;">Loading APK catalog...</p>
   </div>
 
-  <div class="modal" id="detailsModal">
-    <div class="modal-box">
-      <div class="modal-top">
-        <h4 style="color:#24c373;">APK Details</h4>
-        <span onclick="closeModal('detailsModal')" style="font-size:22px; cursor:pointer;">&times;</span>
-      </div>
-      <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 14px;">
-        <img id="detailImg" src="" style="width:64px; height:64px; border-radius:12px; object-fit:cover;">
-        <div>
-          <h3 id="detailTitle" style="font-size:16px;"></h3>
-          <p id="detailDev" style="font-size:12px; color:#666;"></p>
-          <span class="badge badge-apk" style="margin-top:4px; display:inline-block;">Verified Safe</span>
+<div id="detailsModal" class="modal">
+    <div class="details-content">
+        <button class="close-details-btn" onclick="closeDetails()">✕</button>
+        
+        <div class="details-header">
+            <img id="detailImg" class="details-icon" src="" alt="App Icon">
+            <div>
+                <div id="detailTitle" class="details-title">App Name</div>
+                <div id="detailDev" class="details-dev">Developer Name</div>
+            </div>
         </div>
-      </div>
-      <div style="background:#f4f6f8; padding:10px; border-radius:8px; font-size:12px; margin-bottom:12px;" id="detailDesc"></div>
-      <a id="detailDownload" href="#" class="pub-btn" style="display:block; text-align:center; text-decoration:none;" target="_blank" download>Download APK</a>
+
+        <div class="details-stats">
+            <div class="stat-box">
+                <div class="stat-val">4.6 ★</div>
+                <div class="stat-label">Reviews</div>
+            </div>
+            <div class="stat-box">
+                <div id="detailSize" class="stat-val">12 MB</div>
+                <div class="stat-label">Size</div>
+            </div>
+            <div class="stat-box">
+                <div id="detailDownloads" class="stat-val">0</div>
+                <div class="stat-label">Downloads</div>
+            </div>
+        </div>
+
+        <a id="detailDownloadBtn" href="#" class="details-install-btn" target="_blank" download onclick="incrementDownloadFromModal()">Install</a>
+
+        <div class="details-about-title">About this app</div>
+        <div id="detailDesc" class="details-desc">App description goes here...</div>
     </div>
-  </div>
+</div>
+
+        
 
   <div class="modal" id="uploadModal">
     <div class="modal-box">
