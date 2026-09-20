@@ -239,7 +239,8 @@
               </div>
             </div>
             <div class="apk-actions" onclick="event.stopPropagation()">
-              <a href="${app.apk}" class="dl-btn" target="_blank" download>Install</a>
+              <a href="${app.apk}" class="dl-btn" target="_blank" download onclick="incrementDownload('${app.id}')">Install</a>
+              
               <button class="del-btn" onclick="removeApp('${app.id}')">Delete</button>
             </div>
           </div>
