@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iqbal App Store - Google Play Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Firebase Official SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f8f9fa; color: #202124; padding-bottom: 80px; }
@@ -192,40 +189,29 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://iqbal-app-store-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const dbRef = firebase.database().ref("apps");
-
         const ADMIN_PASS = "Iqbal@786";
-        let appData = [];
+        
+        // Initial default apps so page never shows 0 apps on first load
+        let defaultApps = [
+            {
+                id: 'app_1',
+                appName: 'Iqbal Electric Plumber',
+                appDev: 'Iqbal Mansuri',
+                appIcon: 'https://cdn-icons-png.flaticon.com/512/3076/3076897.png',
+                appLink: 'https://files.catbox.moe/ubok9z.apk',
+                appSize: '15 MB',
+                appCat: 'Tools',
+                appDesc: 'Professional electric and plumbing service app by Iqbal Mansuri.',
+                downloads: 245
+            }
+        ];
+
+        let appData = JSON.parse(localStorage.getItem('iqbal_store_apps')) || defaultApps;
         let currentCategory = 'All';
         let currentOpenAppId = null;
 
         function loadApps() {
-            // Pehle LocalStorage se turant load karo taaki kabhi blank na dikhe
-            let localData = JSON.parse(localStorage.getItem('iqbal_apps')) || [];
-            if(localData.length > 0) {
-                appData = localData;
-                filterApps();
-            }
-
-            // Phir Firebase se live sync karo
-            dbRef.on("value", (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    appData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    localStorage.setItem('iqbal_apps', JSON.stringify(appData));
-                } else if(localData.length === 0) {
-                    appData = [];
-                }
-                filterApps();
-            }, (error) => {
-                // Agar firebase fail ho toh localStorage wala data dikhao
-                appData = JSON.parse(localStorage.getItem('iqbal_apps')) || [];
-                filterApps();
-            });
+            filterApps();
         }
 
         function filterApps() {
@@ -299,10 +285,7 @@
             let app = appData.find(a => a.id === id);
             if (!app) return;
             app.downloads = (app.downloads || 0) + 1;
-            localStorage.setItem('iqbal_apps', JSON.stringify(appData));
-            try {
-                dbRef.child(id).update({ downloads: app.downloads });
-            } catch(e) {}
+            localStorage.setItem('iqbal_store_apps', JSON.stringify(appData));
             filterApps();
         }
 
@@ -332,19 +315,9 @@
                 downloads: 0
             };
 
-            // Local storage me turant save karo
             appData.unshift(newApp);
-            localStorage.setItem('iqbal_apps', JSON.stringify(appData));
-
-            // Firebase me bhi push karne ki koshish karo
-            try {
-                dbRef.push(newApp, (error) => {
-                    if (!error) {
-                        console.log("Synced with Firebase");
-                    }
-                });
-            } catch (err) {}
-
+            localStorage.setItem('iqbal_store_apps', JSON.stringify(appData));
+            
             alert("App Published Successfully!");
             closeModal('uploadModal');
             document.getElementById('apkForm').reset();
@@ -358,10 +331,7 @@
                 return;
             }
             appData = appData.filter(a => a.id !== id);
-            localStorage.setItem('iqbal_apps', JSON.stringify(appData));
-            try {
-                dbRef.child(id).remove();
-            } catch(e) {}
+            localStorage.setItem('iqbal_store_apps', JSON.stringify(appData));
             filterApps();
         }
 
