@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iqbal App Store - Google Play Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Firebase Official SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f8f9fa; color: #202124; padding-bottom: 80px; }
@@ -189,25 +192,31 @@
     </div>
 
     <script>
-        const DB_URL = "https://iqbal-app-store-default-rtdb.firebaseio.com/apps.json";
+        // Firebase Official SDK Initialization
+        const firebaseConfig = {
+            databaseURL: "https://iqbal-app-store-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const dbRef = firebase.database().ref("apps");
+
         const ADMIN_PASS = "Iqbal@786";
         let appData = [];
         let currentCategory = 'All';
         let currentOpenAppId = null;
 
-        async function loadApps() {
-            try {
-                let res = await fetch(DB_URL, { cache: 'no-store' });
-                let data = await res.json();
+        function loadApps() {
+            dbRef.on("value", (snapshot) => {
+                const data = snapshot.val();
                 if (data) {
                     appData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
                 } else {
                     appData = [];
                 }
-            } catch (e) {
+                filterApps();
+            }, (error) => {
                 appData = [];
-            }
-            filterApps();
+                filterApps();
+            });
         }
 
         function filterApps() {
@@ -277,26 +286,20 @@
             openModal('detailsModal');
         }
 
-        async function incrementDownload(id) {
+        function incrementDownload(id) {
             let app = appData.find(a => a.id === id);
             if (!app) return;
             let newDownloads = (app.downloads || 0) + 1;
-            try {
-                await fetch(`https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${id}/downloads.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newDownloads)
-                });
-            } catch(e) {}
+            dbRef.child(id).update({ downloads: newDownloads });
         }
 
-        async function incrementDownloadFromBox() {
+        function incrementDownloadFromBox() {
             if (currentOpenAppId) {
-                await incrementDownload(currentOpenAppId);
+                incrementDownload(currentOpenAppId);
             }
         }
 
-        async function publishApp(e) {
+        function publishApp(e) {
             e.preventDefault();
             let pass = document.getElementById('payTxnId').value;
             if (pass !== ADMIN_PASS) {
@@ -316,38 +319,27 @@
             };
 
             try {
-                let res = await fetch(DB_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newApp)
+                dbRef.push(newApp, (error) => {
+                    if (error) {
+                        alert("Failed to publish app.");
+                    } else {
+                        alert("App Published Successfully!");
+                        closeModal('uploadModal');
+                        document.getElementById('apkForm').reset();
+                    }
                 });
-                if (res.ok) {
-                    alert("App Published Successfully!");
-                    closeModal('uploadModal');
-                    document.getElementById('apkForm').reset();
-                    await loadApps();
-                } else {
-                    alert("Failed to publish app.");
-                }
             } catch (err) {
                 alert("Error connecting to database.");
             }
         }
 
-        async function deleteApp(id) {
+        function deleteApp(id) {
             let pass = prompt("Enter Admin Password to delete:");
             if (pass !== ADMIN_PASS) {
                 if (pass !== null) alert("Incorrect Password!");
                 return;
             }
-            try {
-                let res = await fetch(`https://iqbal-app-store-default-rtdb.firebaseio.com/apps/${id}.json`, {
-                    method: 'DELETE'
-                });
-                if (res.ok) {
-                    loadApps();
-                }
-            } catch (e) {}
+            dbRef.child(id).remove();
         }
 
         loadApps();
