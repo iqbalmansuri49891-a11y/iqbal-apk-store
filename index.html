@@ -8,6 +8,10 @@
     <!-- Google AdSense Auto Ads Integration -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1153244824920209" crossorigin="anonymous"></script>
 
+    <!-- Firebase App & Realtime Database SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
@@ -211,33 +215,61 @@
 
     <script>
         const ADMIN_PASS = "Iqbal@786";
-        let defaultApps = [
-            {
-                id: 'app_1',
-                appName: 'Iqbal Electric Plumber',
-                appDev: 'Iqbal Mansuri',
-                appIcon: 'https://cdn-icons-png.flaticon.com/512/3076/3076897.png',
-                appLink: 'https://files.catbox.moe/ubok9z.apk',
-                appSize: '15 MB',
-                appCat: 'Tools',
-                appDesc: 'Professional electric and plumbing service app by Iqbal Mansuri.',
-                downloads: 245
-            }
-        ];
 
-        let appData = JSON.parse(localStorage.getItem('iqbal_store_apps')) || defaultApps;
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOnAcMgdbRBZHTAyKh...",
+            authDomain: "iqbal-app-store.firebaseapp.com",
+            databaseURL: "https://iqbal-app-store-default-rtdb.firebaseio.com",
+            projectId: "iqbal-app-store",
+            storageBucket: "iqbal-app-store.appspot.com",
+            messagingSenderId: "123786539122",
+            appId: "1:123786539122:web:4b8ba5...",
+            measurementId: "G-N47MB1FNLF"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let appData = [];
         let currentCategory = 'All';
         let currentOpenAppId = null;
 
+        // Real-time listener from Firebase Database
         function loadApps() {
-            filterApps();
+            db.ref('apps').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    appData = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                    appData.reverse();
+                } else {
+                    appData = [
+                        {
+                            id: 'app_1',
+                            appName: 'Iqbal Electric Plumber',
+                            appDev: 'Iqbal Mansuri',
+                            appIcon: 'https://cdn-icons-png.flaticon.com/512/3076/3076897.png',
+                            appLink: 'https://files.catbox.moe/ubok9z.apk',
+                            appSize: '15 MB',
+                            appCat: 'Tools',
+                            appDesc: 'Professional electric and plumbing service app by Iqbal Mansuri.',
+                            downloads: 245
+                        }
+                    ];
+                }
+                filterApps();
+            });
         }
 
         function filterApps() {
             let query = document.getElementById('searchInput').value.toLowerCase();
             let filtered = appData.filter(app => {
                 let matchCat = currentCategory === 'All' || app.appCat === currentCategory;
-                let matchQuery = app.appName.toLowerCase().includes(query) || app.appDev.toLowerCase().includes(query);
+                let matchQuery = (app.appName || '').toLowerCase().includes(query) || (app.appDev || '').toLowerCase().includes(query);
                 return matchCat && matchQuery;
             });
 
@@ -303,9 +335,8 @@
         function incrementDownload(id) {
             let app = appData.find(a => a.id === id);
             if (!app) return;
-            app.downloads = (app.downloads || 0) + 1;
-            localStorage.setItem('iqbal_store_apps', JSON.stringify(appData));
-            filterApps();
+            let newDownloads = (app.downloads || 0) + 1;
+            db.ref('apps/' + id).update({ downloads: newDownloads });
         }
 
         function incrementDownloadFromBox() {
@@ -322,8 +353,8 @@
                 return;
             }
 
+            let appId = 'app_' + Date.now();
             let newApp = {
-                id: 'app_' + Date.now(),
                 appName: document.getElementById('appName').value,
                 appDev: document.getElementById('appDev').value,
                 appIcon: document.getElementById('appIcon').value,
@@ -334,13 +365,15 @@
                 downloads: 0
             };
 
-            appData.unshift(newApp);
-            localStorage.setItem('iqbal_store_apps', JSON.stringify(appData));
-            
-            alert("App Published Successfully!");
-            closeModal('uploadModal');
-            document.getElementById('apkForm').reset();
-            filterApps();
+            db.ref('apps/' + appId).set(newApp, (error) => {
+                if (error) {
+                    alert("Failed to publish app. Check database rules.");
+                } else {
+                    alert("App Published Successfully to Cloud Database!");
+                    closeModal('uploadModal');
+                    document.getElementById('apkForm').reset();
+                }
+            });
         }
 
         function deleteApp(id) {
@@ -349,9 +382,13 @@
                 if (pass !== null) alert("Incorrect Password!");
                 return;
             }
-            appData = appData.filter(a => a.id !== id);
-            localStorage.setItem('iqbal_store_apps', JSON.stringify(appData));
-            filterApps();
+            db.ref('apps/' + id).remove((error) => {
+                if (error) {
+                    alert("Failed to delete app.");
+                } else {
+                    alert("App Deleted Successfully!");
+                }
+            });
         }
 
         loadApps();
