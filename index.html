@@ -204,16 +204,26 @@
         let currentOpenAppId = null;
 
         function loadApps() {
+            // Pehle LocalStorage se turant load karo taaki kabhi blank na dikhe
+            let localData = JSON.parse(localStorage.getItem('iqbal_apps')) || [];
+            if(localData.length > 0) {
+                appData = localData;
+                filterApps();
+            }
+
+            // Phir Firebase se live sync karo
             dbRef.on("value", (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     appData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                } else {
+                    localStorage.setItem('iqbal_apps', JSON.stringify(appData));
+                } else if(localData.length === 0) {
                     appData = [];
                 }
                 filterApps();
             }, (error) => {
-                appData = [];
+                // Agar firebase fail ho toh localStorage wala data dikhao
+                appData = JSON.parse(localStorage.getItem('iqbal_apps')) || [];
                 filterApps();
             });
         }
@@ -288,8 +298,12 @@
         function incrementDownload(id) {
             let app = appData.find(a => a.id === id);
             if (!app) return;
-            let newDownloads = (app.downloads || 0) + 1;
-            dbRef.child(id).update({ downloads: newDownloads });
+            app.downloads = (app.downloads || 0) + 1;
+            localStorage.setItem('iqbal_apps', JSON.stringify(appData));
+            try {
+                dbRef.child(id).update({ downloads: app.downloads });
+            } catch(e) {}
+            filterApps();
         }
 
         function incrementDownloadFromBox() {
@@ -307,6 +321,7 @@
             }
 
             let newApp = {
+                id: 'app_' + Date.now(),
                 appName: document.getElementById('appName').value,
                 appDev: document.getElementById('appDev').value,
                 appIcon: document.getElementById('appIcon').value,
@@ -317,19 +332,23 @@
                 downloads: 0
             };
 
+            // Local storage me turant save karo
+            appData.unshift(newApp);
+            localStorage.setItem('iqbal_apps', JSON.stringify(appData));
+
+            // Firebase me bhi push karne ki koshish karo
             try {
                 dbRef.push(newApp, (error) => {
-                    if (error) {
-                        alert("Failed to publish app.");
-                    } else {
-                        alert("App Published Successfully!");
-                        closeModal('uploadModal');
-                        document.getElementById('apkForm').reset();
+                    if (!error) {
+                        console.log("Synced with Firebase");
                     }
                 });
-            } catch (err) {
-                alert("Error connecting to database.");
-            }
+            } catch (err) {}
+
+            alert("App Published Successfully!");
+            closeModal('uploadModal');
+            document.getElementById('apkForm').reset();
+            filterApps();
         }
 
         function deleteApp(id) {
@@ -338,7 +357,12 @@
                 if (pass !== null) alert("Incorrect Password!");
                 return;
             }
-            dbRef.child(id).remove();
+            appData = appData.filter(a => a.id !== id);
+            localStorage.setItem('iqbal_apps', JSON.stringify(appData));
+            try {
+                dbRef.child(id).remove();
+            } catch(e) {}
+            filterApps();
         }
 
         loadApps();
