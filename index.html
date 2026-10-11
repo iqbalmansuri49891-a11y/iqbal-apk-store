@@ -3,294 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iqbal App Store - Complete Edition</title>
+    <title>Iqbal App Store - Google Play Edition</title>
     
     <!-- Google AdSense Auto Ads Integration -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1153244824920209" crossorigin="anonymous"></script>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase App, Auth & Realtime Database SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f8f9fa; color: #202124; padding-bottom: 90px; }
+        body { background-color: #f8f9fa; color: #202124; padding-bottom: 120px; }
         
         .play-navbar { background: #ffffff; padding: 12px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; }
         .brand-box { display: flex; align-items: center; gap: 8px; }
         .brand-logo { font-size: 19px; font-weight: 700; color: #1a73e8; }
-        
-        .page-section { display: none; padding: 16px; }
-        .page-section.active { display: block; }
+        .nav-right-flex { display: flex; align-items: center; gap: 8px; }
+        .submit-apk-btn { background: #1a73e8; color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .user-pill { font-size: 12px; color: #5f6368; background: #f1f3f4; padding: 6px 12px; border-radius: 16px; font-weight: 500; }
 
-        /* Adsterra Banner Container Style */
+        /* Ad Banner Container Style */
         .ad-container { text-align: center; margin: 12px auto; background: #fff; padding: 8px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); max-width: 300px; overflow: hidden; }
 
-        /* Bottom Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #e8eaed; z-index: 150; }
-        .nav-item { text-align: center; color: #5f6368; font-size: 12px; cursor: pointer; font-weight: 500; flex: 1; background: none; border: none; }
-        .nav-item.active { color: #1a73e8; font-weight: 700; }
-        .nav-item div { font-size: 20px; margin-bottom: 2px; }
-
-        /* Auth Page Styles */
-        .auth-container { max-width: 400px; margin: 20px auto; }
-        .tab-buttons { display: flex; margin-bottom: 15px; background: #e8eaed; border-radius: 8px; padding: 4px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; cursor: pointer; border-radius: 6px; font-size: 14px; color: #5f6368; }
-        .tab-btn.active { background: #fff; color: #1a73e8; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-
-        .auth-card { background: #fff; padding: 24px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
-        .auth-card h2 { font-size: 20px; color: #1a73e8; margin-bottom: 8px; }
-        .auth-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 8px; font-size: 14px; outline: none; }
-        .auth-btn { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-
-        /* Store Page Styles */
-        .search-bar-container { position: relative; margin-bottom: 12px; }
+        .search-bar-container { margin: 12px 16px; position: relative; }
         .search-bar-container input { width: 100%; padding: 12px 16px 12px 45px; border: 1px solid #dadce0; border-radius: 24px; font-size: 14px; outline: none; background: #f1f3f4; }
+        .search-bar-container input:focus { background: #fff; border-color: #1a73e8; box-shadow: 0 1px 6px rgba(32,33,36,0.28); }
         .s-icon { position: absolute; left: 16px; top: 14px; color: #5f6368; font-size: 16px; }
 
-        .chips-container { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+        .chips-container { display: flex; gap: 8px; padding: 6px 16px; background: #fff; overflow-x: auto; border-bottom: 1px solid #e8eaed; }
         .chip { border: 1px solid #dadce0; background: #fff; color: #3c4043; padding: 6px 16px; border-radius: 16px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
         .chip.active { background: #e8f0fe; color: #1a73e8; border-color: #d2e3fc; font-weight: 600; }
 
-        .play-card { background: #fff; border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 14px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(60,64,67,0.2); }
-        .app-icon { width: 60px; height: 60px; border-radius: 14px; object-fit: cover; background: #f1f3f4; flex-shrink: 0; }
+        .section-title { display: flex; justify-content: space-between; align-items: center; padding: 16px 16px 8px 16px; }
+        .section-title h4 { font-size: 16px; font-weight: 700; color: #202124; }
+        .section-title span { font-size: 12px; color: #1a73e8; font-weight: 600; }
+
+        .app-list { padding: 0 16px; }
+        .play-card { background: #fff; border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 14px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(60,64,67,0.3); cursor: pointer; }
+        .app-icon { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; background: #f1f3f4; flex-shrink: 0; }
         .app-info { flex: 1; min-width: 0; }
         .app-name { font-size: 15px; font-weight: 600; color: #202124; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .app-dev { font-size: 13px; color: #5f6368; margin-top: 2px; }
-        .install-pill { background: #1a73e8; color: white; padding: 6px 18px; border-radius: 16px; font-size: 13px; font-weight: 600; text-decoration: none; display: inline-block; }
+        .app-metrics { display: flex; gap: 8px; margin-top: 6px; align-items: center; font-size: 12px; color: #5f6368; }
+        .rating-badge { color: #202124; font-weight: 600; }
 
-        /* Publish Page Styles */
-        .publish-box { background: #fff; max-width: 500px; margin: 0 auto; padding: 24px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .app-action-box { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+        .install-pill { background: #1a73e8; color: white; padding: 6px 18px; border-radius: 16px; font-size: 13px; font-weight: 600; text-decoration: none; }
+        .delete-link { background: none; border: none; color: #d93025; font-size: 11px; cursor: pointer; font-weight: 500; }
+
+        /* Bottom Play Store Navigation Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #e8eaed; z-index: 150; }
+        .nav-item { text-align: center; color: #5f6368; font-size: 11px; cursor: pointer; font-weight: 500; text-decoration: none; flex: 1; background: none; border: none; }
+        .nav-item.active { color: #1a73e8; font-weight: 700; }
+        .nav-item div { font-size: 18px; margin-bottom: 2px; }
+
+        /* Google Play Style Details Modal */
+        #detailsModal { display: none; position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200; justify-content: center; align-items: flex-end; }
+        .details-content { background: #fff; width: 100%; max-width: 500px; max-height: 90vh; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 24px; overflow-y: auto; box-shadow: 0 -4px 25px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .modal-header-flex { display: flex; gap: 16px; align-items: center; }
+        .modal-icon { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; }
+        .modal-title { font-size: 20px; font-weight: 700; color: #202124; }
+        .modal-dev { font-size: 14px; color: #1a73e8; margin-top: 2px; font-weight: 500; }
+
+        .play-stats-bar { display: flex; justify-content: space-around; margin: 20px 0; padding: 12px 0; border-top: 1px solid #f1f3f4; border-bottom: 1px solid #f1f3f4; text-align: center; }
+        .p-box { flex: 1; border-right: 1px solid #f1f3f4; }
+        .p-box:last-child { border-right: none; }
+        .p-num { font-size: 15px; font-weight: 700; color: #202124; }
+        .p-txt { font-size: 11px; color: #5f6368; margin-top: 3px; }
+
+        .modal-install-btn { display: block; width: 100%; background: #1a73e8; color: white; text-align: center; padding: 14px; border-radius: 28px; font-size: 16px; font-weight: 600; text-decoration: none; margin-top: 16px; box-shadow: 0 2px 6px rgba(26,115,232,0.3); }
+        .modal-desc-title { font-size: 16px; font-weight: 700; color: #202124; margin-top: 24px; }
+        .modal-desc-text { font-size: 14px; color: #5f6368; line-height: 1.6; margin-top: 8px; }
+        .close-btn { float: right; background: #f1f3f4; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; color: #5f6368; display: flex; align-items: center; justify-content: center; }
+
+        /* Submit APK Modal */
+        #uploadModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; justify-content: center; align-items: flex-end; }
+        .upload-box { background: #fff; width: 100%; max-width: 460px; border-top-left-radius: 24px; border-top-right-radius: 24px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+        .upload-top-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8eaed; padding-bottom: 12px; margin-bottom: 16px; }
         label { font-size: 12px; font-weight: 600; color: #5f6368; margin-top: 12px; display: block; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #dadce0; border-radius: 8px; font-size: 14px; outline: none; background: #fff; }
-        .submit-final-btn { width: 100%; padding: 14px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; margin-top: 20px; cursor: pointer; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 4px; border: 1px solid #dadce0; border-radius: 8px; font-size: 14px; outline: none; background: #fff; }
+        .submit-final-btn { width: 100%; padding: 14px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; margin-top: 20px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+
+        /* Auth Modal (Login / Signup) */
+        #authModal { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; justify-content: center; align-items: center; }
+        .auth-box { background: #fff; width: 90%; max-width: 400px; border-radius: 20px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); text-align: center; }
+        .auth-tabs { display: flex; margin-bottom: 20px; background: #f1f3f4; border-radius: 10px; padding: 4px; }
+        .auth-tab { flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 14px; color: #5f6368; }
+        .auth-tab.active { background: #fff; color: #1a73e8; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .auth-btn { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; margin-top: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
+
+    <!-- AUTHENTICATION MODAL (POPUP ON START) -->
+    <div id="authModal">
+        <div class="auth-box">
+            <h2 id="authModalTitle" style="color: #1a73e8; margin-bottom: 6px; font-size: 22px;">Welcome to Iqbal App Store</h2>
+            <p style="font-size: 13px; color: #5f6368; margin-bottom: 16px;">Store access karne ke liye Login ya Sign Up karein</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="loginTabBtn" onclick="switchAuthMode('login')">Login</button>
+                <button class="auth-tab" id="signupTabBtn" onclick="switchAuthMode('signup')">Sign Up</button>
+            </div>
+
+            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                <label style="text-align: left;">Email Address (Gmail)</label>
+                <input type="email" id="authEmail" required placeholder="name@gmail.com">
+                <label style="text-align: left; margin-top: 10px;">Password</label>
+                <input type="password" id="authPassword" required placeholder="Enter password">
+                <button type="submit" id="authSubmitBtn" class="auth-btn">Login</button>
+                <div id="authErrorMsg" style="margin-top: 12px; font-size: 13px; font-weight: 600; color: #d93025;"></div>
+            </form>
+        </div>
+    </div>
 
     <div class="play-navbar">
         <div class="brand-box">
             <span style="font-size: 20px;">⚡</span>
             <div class="brand-logo">Iqbal App Store</div>
         </div>
-        <span id="userStatus" style="font-size: 12px; color: #5f6368; font-weight: 500;">🔒 Not Logged In</span>
-    </div>
-
-    <!-- PAGE 1: SEPARATE LOGIN & SIGNUP TABS -->
-    <div id="page1" class="page-section active">
-        <div class="auth-container">
-            <div class="tab-buttons">
-                <button class="tab-btn active" id="loginTabBtn" onclick="switchAuthTab('login')">Login</button>
-                <button class="tab-btn" id="signupTabBtn" onclick="switchAuthTab('signup')">Sign Up</button>
-            </div>
-
-            <!-- Login Form -->
-            <div id="loginFormCard" class="auth-card">
-                <h2>Welcome Back</h2>
-                <p style="font-size: 13px; color: #5f6368; margin-bottom: 14px;">Apne account me login karein</p>
-                <input type="email" id="loginEmail" class="auth-input" placeholder="Enter your Gmail">
-                <input type="password" id="loginPass" class="auth-input" placeholder="Enter password">
-                <button class="auth-btn" onclick="handleLogin()">Login</button>
-                <div id="loginMsg" style="margin-top: 10px; font-size: 13px; font-weight: 600;"></div>
-            </div>
-
-            <!-- Sign Up Form -->
-            <div id="signupFormCard" class="auth-card" style="display: none;">
-                <h2>Create Account</h2>
-                <p style="font-size: 13px; color: #5f6368; margin-bottom: 14px;">Naya account banane ke liye details bharein</p>
-                <input type="email" id="signupEmail" class="auth-input" placeholder="Enter your Gmail">
-                <input type="password" id="signupPass" class="auth-input" placeholder="Create password">
-                <button class="auth-btn" onclick="handleSignup()">Sign Up</button>
-                <div id="signupMsg" style="margin-top: 10px; font-size: 13px; font-weight: 600;"></div>
-            </div>
+        <div class="nav-right-flex">
+            <span id="loggedInUserDisplay" class="user-pill">Guest</span>
+            <button class="submit-apk-btn" onclick="openModal('uploadModal')">+ Submit APK</button>
         </div>
     </div>
 
-    <!-- PAGE 2: APP, GAME, BOOK, TOOL STORE -->
-    <div id="page2" class="page-section">
-        <!-- Adsterra Live Banner Ad Integration -->
-        <div class="ad-container">
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : 'a16006c2914efe3755f12fa59f974e09',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="https://www.highrevenueformat.com/a16006c2914efe3755f12fa59f974e09/invoke.js"></script>
-        </div>
-
-        <div class="search-bar-container">
-            <span class="s-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search apps, games, books & tools" oninput="filterApps()">
-        </div>
-
-        <div class="chips-container">
-            <button class="chip active" onclick="setCategory('All', this)">All</button>
-            <button class="chip" onclick="setCategory('Apps', this)">Apps</button>
-            <button class="chip" onclick="setCategory('Games', this)">Games</button>
-            <button class="chip" onclick="setCategory('Books', this)">Books</button>
-            <button class="chip" onclick="setCategory('Tools', this)">Tools</button>
-        </div>
-
-        <div id="appList"></div>
+    <!-- Adsterra Live Banner Ad Integration -->
+    <div class="ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : 'a16006c2914efe3755f12fa59f974e09',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="https://www.highrevenueformat.com/a16006c2914efe3755f12fa59f974e09/invoke.js"></script>
     </div>
 
-    <!-- PAGE 3: PUBLISH CONTENT -->
-    <div id="page3" class="page-section">
-        <div class="publish-box">
-            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #1a73e8;">Publish New Item</h3>
+    <div class="search-bar-container">
+        <span class="s-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search apps & games" oninput="filterApps()">
+    </div>
+
+    <div class="chips-container">
+        <button class="chip active" onclick="setCategory('All', this)">For you</button>
+        <button class="chip" onclick="setCategory('Games', this)">Games</button>
+        <button class="chip" onclick="setCategory('Tools', this)">Tools</button>
+        <button class="chip" onclick="setCategory('Social', this)">Social</button>
+    </div>
+
+    <div class="section-title">
+        <h4 id="sectionTitle">Suggested for you</h4>
+        <span id="appCount">0 Apps</span>
+    </div>
+
+    <div class="app-list" id="appList"></div>
+
+    <!-- Bottom Play Store Navigation Bar -->
+    <div class="bottom-nav">
+        <button class="nav-item" onclick="setCategory('Games', document.querySelectorAll('.chip')[1])">
+            <div>🎮</div>Games
+        </button>
+        <button class="nav-item active">
+            <div>📱</div>Apps
+        </button>
+        <button class="nav-item" onclick="document.getElementById('searchInput').focus()">
+            <div>🔍</div>Search
+        </button>
+        <button class="nav-item" onclick="openModal('uploadModal')">
+            <div>➕</div>Submit
+        </button>
+    </div>
+
+    <!-- App Details Modal -->
+    <div id="detailsModal">
+        <div class="details-content">
+            <button class="close-btn" onclick="closeModal('detailsModal')">&times;</button>
+            <div class="modal-header-flex">
+                <img id="detailsIcon" class="modal-icon" src="" alt="Icon">
+                <div>
+                    <div id="detailsTitle" class="modal-title">App Name</div>
+                    <div id="detailsDev" class="modal-dev">Developer</div>
+                </div>
+            </div>
+
+            <div class="play-stats-bar">
+                <div class="p-box">
+                    <div class="p-num">4.5 ⭐</div>
+                    <div class="p-txt">1M+ reviews</div>
+                </div>
+                <div class="p-box">
+                    <div class="p-num" id="detailsDownloads">10K+</div>
+                    <div class="p-txt">Downloads</div>
+                </div>
+                <div class="p-box">
+                    <div class="p-num" id="detailsSize">15 MB</div>
+                    <div class="p-txt">Rated for 18+</div>
+                </div>
+            </div>
+
+            <a id="detailDownloadBtn" href="#" class="modal-install-btn" target="_blank" onclick="incrementDownloadFromBox()">Install</a>
+
+            <div class="modal-desc-title">About this app</div>
+            <div id="detailsDesc" class="modal-desc-text">Fast and direct installable APK file.</div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal">
+        <div class="upload-box">
+            <div class="upload-top-flex">
+                <h3 style="font-size: 18px; font-weight: 600;">Publish New APK</h3>
+                <button onclick="closeModal('uploadModal')" style="background:none; border:none; font-size:20px; cursor:pointer; color:#5f6368;">&times;</button>
+            </div>
             <form id="apkForm" onsubmit="publishApp(event)">
-                <label>Item Name</label>
-                <input type="text" id="appName" required placeholder="Enter Name">
+                <label>App Name</label>
+                <input type="text" id="appName" required placeholder="Enter App Name">
                 <label>Developer Name</label>
                 <input type="text" id="appDev" required placeholder="Enter Developer Name">
-                <label>Icon URL</label>
+                <label>App Icon URL</label>
                 <input type="url" id="appIcon" placeholder="https://..." required>
-                <label>Direct Download Link</label>
+                <label>Direct APK Download Link</label>
                 <input type="url" id="appLink" required placeholder="https://...">
-                <label>Size</label>
+                <label>App Size (e.g. 25 MB)</label>
                 <input type="text" id="appSize" required placeholder="15 MB">
                 <label>Category</label>
                 <select id="appCat">
-                    <option value="Apps">Apps</option>
-                    <option value="Games">Games</option>
-                    <option value="Books">Books</option>
                     <option value="Tools">Tools</option>
+                    <option value="Games">Games</option>
+                    <option value="Social">Social</option>
                 </select>
                 <label>Description</label>
-                <textarea id="appDesc" rows="3" placeholder="Write details..."></textarea>
-                <button type="submit" class="submit-final-btn">Publish to Cloud</button>
+                <textarea id="appDesc" rows="3" placeholder="Write something about app..."></textarea>
+                <label>Admin Password</label>
+                <input type="password" id="payTxnId" required placeholder="Enter admin password">
+                <button type="submit" class="submit-final-btn">Publish App</button>
             </form>
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR -->
-    <div class="bottom-nav">
-        <button class="nav-item active" onclick="switchPage(1, this)">
-            <div>👤</div>Account
-        </button>
-        <button class="nav-item" onclick="switchPage(2, this)">
-            <div>🛍️</div>Store
-        </button>
-        <button class="nav-item" onclick="switchPage(3, this)">
-            <div>➕</div>Publish
-        </button>
-    </div>
-
     <script>
-        let currentUser = null;
+        const ADMIN_PASS = "Iqbal@786";
 
+        // Firebase Configuration
         const firebaseConfig = {
+            apiKey: "AIzaSyAOnAcMgdbRBZHTAyKh...",
             authDomain: "iqbal-app-store.firebaseapp.com",
             databaseURL: "https://iqbal-app-store-default-rtdb.firebaseio.com",
             projectId: "iqbal-app-store",
             storageBucket: "iqbal-app-store.appspot.com",
             messagingSenderId: "123786539122",
-            appId: "1:123786539122:web:0fd5b0a4008f51778852eb"
+            appId: "1:123786539122:web:4b8ba5...",
+            measurementId: "G-N47MB1FNLF"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const db = firebase.database();
 
+        let isLoginMode = true;
         let appData = [];
         let currentCategory = 'All';
+        let currentOpenAppId = null;
 
-        function switchAuthTab(tab) {
-            if (tab === 'login') {
-                document.getElementById('loginTabBtn').classList.add('active');
-                document.getElementById('signupTabBtn').classList.remove('active');
-                document.getElementById('loginFormCard').style.display = 'block';
-                document.getElementById('signupFormCard').style.display = 'none';
+        function switchAuthMode(mode) {
+            isLoginMode = (mode === 'login');
+            let loginBtn = document.getElementById('loginTabBtn');
+            let signupBtn = document.getElementById('signupTabBtn');
+            let submitBtn = document.getElementById('authSubmitBtn');
+            let errorMsg = document.getElementById('authErrorMsg');
+            errorMsg.innerText = "";
+
+            if (isLoginMode) {
+                loginBtn.classList.add('active');
+                signupBtn.classList.remove('active');
+                submitBtn.innerText = "Login";
             } else {
-                document.getElementById('signupTabBtn').classList.add('active');
-                document.getElementById('loginTabBtn').classList.remove('active');
-                document.getElementById('signupFormCard').style.display = 'block';
-                document.getElementById('loginFormCard').style.display = 'none';
+                signupBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                submitBtn.innerText = "Sign Up";
             }
         }
 
-        function handleSignup() {
-            let email = document.getElementById('signupEmail').value.trim();
-            let pass = document.getElementById('signupPass').value.trim();
-            let msg = document.getElementById('signupMsg');
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            let email = document.getElementById('authEmail').value;
+            let pass = document.getElementById('authPassword').value;
+            let errorMsg = document.getElementById('authErrorMsg');
 
-            if (!email || !pass) {
-                msg.style.color = "red";
-                msg.innerText = "Kripya Gmail aur Password bharein!";
-                return;
-            }
-
-            let userKey = email.replace(/[.$#[\]/]/g, "_");
-
-            db.ref('users/' + userKey).once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    msg.style.color = "red";
-                    msg.innerText = "Yeh Gmail pehle se registered hai! Login karein.";
-                } else {
-                    db.ref('users/' + userKey).set({ email: email, pass: pass }, (error) => {
-                        if (error) {
-                            msg.style.color = "red";
-                            msg.innerText = "Signup failed!";
-                        } else {
-                            msg.style.color = "green";
-                            msg.innerText = "Account Created Successfully! Ab Login tab par click karein.";
-                        }
+            if (isLoginMode) {
+                auth.signInWithEmailAndPassword(email, pass)
+                    .then((userCredential) => {
+                        document.getElementById('authModal').style.display = 'none';
+                        document.getElementById('loggedInUserDisplay.innerText' = userCredential.user.email);
+                    })
+                    .catch((error) => {
+                        errorMsg.innerText = error.message;
                     });
-                }
-            });
-        }
-
-        function handleLogin() {
-            let email = document.getElementById('loginEmail').value.trim();
-            let pass = document.getElementById('loginPass').value.trim();
-            let msg = document.getElementById('loginMsg');
-
-            if (!email || !pass) {
-                msg.style.color = "red";
-                msg.innerText = "Kripya Gmail aur Password bharein!";
-                return;
+            } else {
+                auth.createUserWithEmailAndPassword(email, pass)
+                    .then((userCredential) => {
+                        alert("Account Created & Logged In Successfully!");
+                        document.getElementById('authModal').style.display = 'none';
+                        document.getElementById('loggedInUserDisplay').innerText = userCredential.user.email;
+                    })
+                    .catch((error) => {
+                        errorMsg.innerText = error.message;
+                    });
             }
-
-            let userKey = email.replace(/[.$#[\]/]/g, "_");
-
-            db.ref('users/' + userKey).once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    let userData = snapshot.val();
-                    if (userData.pass === pass) {
-                        currentUser = email;
-                        msg.style.color = "green";
-                        msg.innerText = "Login Successful!";
-                        document.getElementById('userStatus').innerText = "🟢 " + email;
-                        setTimeout(() => {
-                            switchPage(2, document.querySelectorAll('.nav-item')[1]);
-                        }, 800);
-                    } else {
-                        msg.style.color = "red";
-                        msg.innerText = "Galat password!";
-                    }
-                } else {
-                    msg.style.color = "red";
-                    msg.innerText = "Account nahi mila! Pehle Sign Up karein.";
-                }
-            });
         }
 
-        function switchPage(pageNum, btn) {
-            if ((pageNum === 2 || pageNum === 3) && !currentUser) {
-                alert("Pehle Account page par Login karein!");
-                return;
+        // Check Auth State
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('authModal').style.display = 'none';
+                document.getElementById('loggedInUserDisplay').innerText = user.email;
+            } else {
+                document.getElementById('authModal').style.display = 'flex';
             }
+        });
 
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-            document.getElementById('page' + pageNum).classList.add('active');
-
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-        }
-
+        // Real-time listener from Firebase Database
         function loadApps() {
             db.ref('apps').on('value', (snapshot) => {
                 const data = snapshot.val();
@@ -301,7 +342,19 @@
                     }));
                     appData.reverse();
                 } else {
-                    appData = [];
+                    appData = [
+                        {
+                            id: 'app_1',
+                            appName: 'Iqbal Electric Plumber',
+                            appDev: 'Iqbal Mansuri',
+                            appIcon: 'https://cdn-icons-png.flaticon.com/512/3076/3076897.png',
+                            appLink: 'https://files.catbox.moe/ubok9z.apk',
+                            appSize: '15 MB',
+                            appCat: 'Tools',
+                            appDesc: 'Professional electric and plumbing service app by Iqbal Mansuri.',
+                            downloads: 245
+                        }
+                    ];
                 }
                 filterApps();
             });
@@ -316,20 +369,31 @@
             });
 
             let listEl = document.getElementById('appList');
+            document.getElementById('appCount').innerText = filtered.length + " Apps";
+            
             if (filtered.length === 0) {
-                listEl.innerHTML = '<div style="text-align:center; padding:30px; color:#5f6368;">No items found</div>';
+                listEl.innerHTML = '<div style="text-align:center; padding:40px; color:#5f6368; font-size:14px;">No apps found</div>';
                 return;
             }
 
             listEl.innerHTML = filtered.map(app => `
-                <div class="play-card">
+                <div class="play-card" onclick="openDetails('${app.id}')">
                     <img class="app-icon" src="${app.appIcon || 'https://via.placeholder.com/60'}" alt="">
                     <div class="app-info">
                         <div class="app-name">${app.appName}</div>
-                        <div class="app-dev">${app.appDev} (${app.appCat})</div>
-                        <div style="font-size:12px; color:#5f6368; margin-top:4px;">⭐ 4.5 • 📥 ${app.appSize || '10 MB'}</div>
+                        <div class="app-dev">${app.appDev}</div>
+                        <div class="app-metrics">
+                            <span class="rating-badge">4.5 ⭐</span>
+                            <span>•</span>
+                            <span>${app.appSize || '15 MB'}</span>
+                            <span>•</span>
+                            <span>📥 ${app.downloads || 0}</span>
+                        </div>
                     </div>
-                    <a href="${app.appLink}" class="install-pill" target="_blank">Get</a>
+                    <div class="app-action-box" onclick="event.stopPropagation()">
+                        <a href="${app.appLink}" class="install-pill" target="_blank" onclick="incrementDownload('${app.id}')">Install</a>
+                        <button class="delete-link" onclick="deleteApp('${app.id}')">Delete</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -341,15 +405,51 @@
             filterApps();
         }
 
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function openDetails(id) {
+            let app = appData.find(a => a.id === id);
+            if (!app) return;
+            currentOpenAppId = id;
+            document.getElementById('detailsIcon').src = app.appIcon || '';
+            document.getElementById('detailsTitle').innerText = app.appName;
+            document.getElementById('detailsDev').innerText = app.appDev;
+            document.getElementById('detailsDownloads').innerText = (app.downloads || 0) + "+";
+            document.getElementById('detailsSize').innerText = app.appSize || '15 MB';
+            document.getElementById('detailsDesc').innerText = app.appDesc || 'Fast and direct installable APK file.';
+            document.getElementById('detailDownloadBtn').href = app.appLink;
+            openModal('detailsModal');
+        }
+
+        function incrementDownload(id) {
+            let app = appData.find(a => a.id === id);
+            if (!app) return;
+            let newDownloads = (app.downloads || 0) + 1;
+            db.ref('apps/' + id).update({ downloads: newDownloads });
+        }
+
+        function incrementDownloadFromBox() {
+            if (currentOpenAppId) {
+                incrementDownload(currentOpenAppId);
+            }
+        }
+
         function publishApp(e) {
             e.preventDefault();
-            if (!currentUser) {
-                alert("Unauthorized!");
+            let pass = document.getElementById('payTxnId').value;
+            if (pass !== ADMIN_PASS) {
+                alert("Incorrect Admin Password!");
                 return;
             }
 
-            let appId = 'item_' + Date.now();
-            let newItem = {
+            let appId = 'app_' + Date.now();
+            let newApp = {
                 appName: document.getElementById('appName').value,
                 appDev: document.getElementById('appDev').value,
                 appIcon: document.getElementById('appIcon').value,
@@ -357,16 +457,31 @@
                 appSize: document.getElementById('appSize').value,
                 appCat: document.getElementById('appCat').value,
                 appDesc: document.getElementById('appDesc').value,
-                publisher: currentUser
+                downloads: 0
             };
 
-            db.ref('apps/' + appId).set(newItem, (error) => {
+            db.ref('apps/' + appId).set(newApp, (error) => {
                 if (error) {
-                    alert("Failed to publish.");
+                    alert("Failed to publish app. Check database rules.");
                 } else {
-                    alert("Successfully Published to Cloud!");
+                    alert("App Published Successfully to Cloud Database!");
+                    closeModal('uploadModal');
                     document.getElementById('apkForm').reset();
-                    switchPage(2, document.querySelectorAll('.nav-item')[1]);
+                }
+            });
+        }
+
+        function deleteApp(id) {
+            let pass = prompt("Enter Admin Password to delete:");
+            if (pass !== ADMIN_PASS) {
+                if (pass !== null) alert("Incorrect Password!");
+                return;
+            }
+            db.ref('apps/' + id).remove((error) => {
+                if (error) {
+                    alert("Failed to delete app.");
+                } else {
+                    alert("App Deleted Successfully!");
                 }
             });
         }
