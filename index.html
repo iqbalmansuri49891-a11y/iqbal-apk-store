@@ -33,11 +33,15 @@
         .nav-item div { font-size: 20px; margin-bottom: 2px; }
 
         /* Auth Page Styles */
-        .auth-card { background: #fff; max-width: 400px; margin: 30px auto; padding: 24px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
-        .auth-card h2 { font-size: 22px; color: #1a73e8; margin-bottom: 8px; }
+        .auth-container { max-width: 400px; margin: 20px auto; }
+        .tab-buttons { display: flex; margin-bottom: 15px; background: #e8eaed; border-radius: 8px; padding: 4px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; cursor: pointer; border-radius: 6px; font-size: 14px; color: #5f6368; }
+        .tab-btn.active { background: #fff; color: #1a73e8; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        .auth-card { background: #fff; padding: 24px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+        .auth-card h2 { font-size: 20px; color: #1a73e8; margin-bottom: 8px; }
         .auth-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 8px; font-size: 14px; outline: none; }
         .auth-btn { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-        .toggle-link { font-size: 13px; color: #1a73e8; cursor: pointer; margin-top: 16px; display: inline-block; font-weight: 500; }
 
         /* Store Page Styles */
         .search-bar-container { position: relative; margin-bottom: 12px; }
@@ -72,19 +76,33 @@
         <span id="userStatus" style="font-size: 12px; color: #5f6368; font-weight: 500;">🔒 Not Logged In</span>
     </div>
 
-    <!-- PAGE 1: PUBLIC LOGIN / SIGNUP -->
+    <!-- PAGE 1: SEPARATE LOGIN & SIGNUP TABS -->
     <div id="page1" class="page-section active">
-        <div class="auth-card">
-            <h2 id="authTitle">User Login</h2>
-            <p id="authSubtitle" style="font-size: 13px; color: #5f6368; margin-bottom: 16px;">Store access karne ke liye apne Gmail aur password se login karein.</p>
-            
-            <input type="email" id="userEmail" class="auth-input" placeholder="Enter your Gmail">
-            <input type="password" id="userPass" class="auth-input" placeholder="Enter password">
-            
-            <button id="authBtn" class="auth-btn" onclick="handleAuth()">Login</button>
-            <div id="authMsg" style="margin-top: 10px; font-size: 13px; font-weight: 600;"></div>
-            
-            <span class="toggle-link" onclick="toggleAuthMode()" id="toggleText">New user? Create an account (Sign Up)</span>
+        <div class="auth-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="loginTabBtn" onclick="switchAuthTab('login')">Login</button>
+                <button class="tab-btn" id="signupTabBtn" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginFormCard" class="auth-card">
+                <h2>Welcome Back</h2>
+                <p style="font-size: 13px; color: #5f6368; margin-bottom: 14px;">Apne account me login karein</p>
+                <input type="email" id="loginEmail" class="auth-input" placeholder="Enter your Gmail">
+                <input type="password" id="loginPass" class="auth-input" placeholder="Enter password">
+                <button class="auth-btn" onclick="handleLogin()">Login</button>
+                <div id="loginMsg" style="margin-top: 10px; font-size: 13px; font-weight: 600;"></div>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div id="signupFormCard" class="auth-card" style="display: none;">
+                <h2>Create Account</h2>
+                <p style="font-size: 13px; color: #5f6368; margin-bottom: 14px;">Naya account banane ke liye details bharein</p>
+                <input type="email" id="signupEmail" class="auth-input" placeholder="Enter your Gmail">
+                <input type="password" id="signupPass" class="auth-input" placeholder="Create password">
+                <button class="auth-btn" onclick="handleSignup()">Sign Up</button>
+                <div id="signupMsg" style="margin-top: 10px; font-size: 13px; font-weight: 600;"></div>
+            </div>
         </div>
     </div>
 
@@ -163,7 +181,6 @@
     </div>
 
     <script>
-        let isSignUpMode = false;
         let currentUser = null;
 
         const firebaseConfig = {
@@ -181,84 +198,89 @@
         let appData = [];
         let currentCategory = 'All';
 
-        function toggleAuthMode() {
-            isSignUpMode = !isSignUpMode;
-            let title = document.getElementById('authTitle');
-            let subtitle = document.getElementById('authSubtitle');
-            let btn = document.getElementById('authBtn');
-            let toggle = document.getElementById('toggleText');
-
-            if (isSignUpMode) {
-                title.innerText = "Create Account (Sign Up)";
-                subtitle.innerText = "Naya account banane ke liye apna Gmail aur password darj karein.";
-                btn.innerText = "Sign Up";
-                toggle.innerText = "Already have an account? Login here";
+        function switchAuthTab(tab) {
+            if (tab === 'login') {
+                document.getElementById('loginTabBtn').classList.add('active');
+                document.getElementById('signupTabBtn').classList.remove('active');
+                document.getElementById('loginFormCard').style.display = 'block';
+                document.getElementById('signupFormCard').style.display = 'none';
             } else {
-                title.innerText = "User Login";
-                subtitle.innerText = "Store access karne ke liye apne Gmail aur password se login karein.";
-                btn.innerText = "Login";
-                toggle.innerText = "New user? Create an account (Sign Up)";
+                document.getElementById('signupTabBtn').classList.add('active');
+                document.getElementById('loginTabBtn').classList.remove('active');
+                document.getElementById('signupFormCard').style.display = 'block';
+                document.getElementById('loginFormCard').style.display = 'none';
             }
         }
 
-        function handleAuth() {
-            let email = document.getElementById('userEmail').value.trim();
-            let pass = document.getElementById('userPass').value.trim();
-            let msg = document.getElementById('authMsg');
+        function handleSignup() {
+            let email = document.getElementById('signupEmail').value.trim();
+            let pass = document.getElementById('signupPass').value.trim();
+            let msg = document.getElementById('signupMsg');
 
             if (!email || !pass) {
                 msg.style.color = "red";
-                msg.innerText = "Kripya Gmail aur Password dono bharein!";
+                msg.innerText = "Kripya Gmail aur Password bharein!";
                 return;
             }
 
             let userKey = email.replace(/[.$#[\]/]/g, "_");
 
-            if (isSignUpMode) {
-                db.ref('users/' + userKey).once('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        msg.style.color = "red";
-                        msg.innerText = "Yeh Gmail pehle se registered hai! Login karein.";
-                    } else {
-                        db.ref('users/' + userKey).set({ email: email, pass: pass }, (error) => {
-                            if (error) {
-                                msg.style.color = "red";
-                                msg.innerText = "Signup failed!";
-                            } else {
-                                msg.style.color = "green";
-                                msg.innerText = "Account Successfully Created! Ab aap Login kar sakte hain.";
-                                toggleAuthMode();
-                            }
-                        });
-                    }
-                });
-            } else {
-                db.ref('users/' + userKey).once('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        let userData = snapshot.val();
-                        if (userData.pass === pass) {
-                            currentUser = email;
-                            msg.style.color = "green";
-                            msg.innerText = "Login Successful!";
-                            document.getElementById('userStatus').innerText = "🟢 " + email;
-                            setTimeout(() => {
-                                switchPage(2, document.querySelectorAll('.nav-item')[1]);
-                            }, 800);
-                        } else {
+            db.ref('users/' + userKey).once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    msg.style.color = "red";
+                    msg.innerText = "Yeh Gmail pehle se registered hai! Login karein.";
+                } else {
+                    db.ref('users/' + userKey).set({ email: email, pass: pass }, (error) => {
+                        if (error) {
                             msg.style.color = "red";
-                            msg.innerText = "Galat password! Dobara koshish karein.";
+                            msg.innerText = "Signup failed!";
+                        } else {
+                            msg.style.color = "green";
+                            msg.innerText = "Account Created Successfully! Ab Login tab par click karein.";
                         }
+                    });
+                }
+            });
+        }
+
+        function handleLogin() {
+            let email = document.getElementById('loginEmail').value.trim();
+            let pass = document.getElementById('loginPass').value.trim();
+            let msg = document.getElementById('loginMsg');
+
+            if (!email || !pass) {
+                msg.style.color = "red";
+                msg.innerText = "Kripya Gmail aur Password bharein!";
+                return;
+            }
+
+            let userKey = email.replace(/[.$#[\]/]/g, "_");
+
+            db.ref('users/' + userKey).once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    let userData = snapshot.val();
+                    if (userData.pass === pass) {
+                        currentUser = email;
+                        msg.style.color = "green";
+                        msg.innerText = "Login Successful!";
+                        document.getElementById('userStatus').innerText = "🟢 " + email;
+                        setTimeout(() => {
+                            switchPage(2, document.querySelectorAll('.nav-item')[1]);
+                        }, 800);
                     } else {
                         msg.style.color = "red";
-                        msg.innerText = "Yeh Gmail registered nahi hai! Pehle Sign Up karein.";
+                        msg.innerText = "Galat password!";
                     }
-                });
-            }
+                } else {
+                    msg.style.color = "red";
+                    msg.innerText = "Account nahi mila! Pehle Sign Up karein.";
+                }
+            });
         }
 
         function switchPage(pageNum, btn) {
             if ((pageNum === 2 || pageNum === 3) && !currentUser) {
-                alert("Pehle Account page par jaakar Login ya Signup karein!");
+                alert("Pehle Account page par Login karein!");
                 return;
             }
 
