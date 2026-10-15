@@ -265,14 +265,13 @@
         });
     }
 
-    // Fixed Download Function with .apk extension enforcement
+    // Force open in external browser to ensure stable download
     function downloadApk(url, id) {
         incrementDownload(id);
         let a = document.createElement('a');
         a.href = url;
-        a.setAttribute('download', 'app.apk');
-        a.setAttribute('type', 'application/vnd.android.package-archive');
         a.target = '_blank';
+        a.rel = 'noopener noreferrer';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
