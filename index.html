@@ -265,12 +265,13 @@
         });
     }
 
-    // Custom Download Function for WebView/App compatibility
+    // Fixed Download Function with .apk extension enforcement
     function downloadApk(url, id) {
         incrementDownload(id);
         let a = document.createElement('a');
         a.href = url;
-        a.setAttribute('download', '');
+        a.setAttribute('download', 'app.apk');
+        a.setAttribute('type', 'application/vnd.android.package-archive');
         a.target = '_blank';
         document.body.appendChild(a);
         a.click();
