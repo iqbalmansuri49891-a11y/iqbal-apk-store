@@ -240,16 +240,16 @@
 <script>
     const ADMIN_PASS = "Iqbal@786";
 
-    // Firebase Configuration
+    // Firebase Configuration (Updated with your real credentials)
     const firebaseConfig = {
-        apiKey: "AIzaSyAOnAcMgdbRBZHTAyKh...",
+        apiKey: "AIzaSyAOnAcMgdbRBZHTAykHW4Ekaq1r91Y5ESM",
         authDomain: "iqbal-app-store.firebaseapp.com",
         databaseURL: "https://iqbal-app-store-default-rtdb.firebaseio.com",
         projectId: "iqbal-app-store",
-        storageBucket: "iqbal-app-store.appspot.com",
+        storageBucket: "iqbal-app-store.firebasestorage.app",
         messagingSenderId: "123786539122",
-        appId: "1:123786539122:web:4b8ba5...",
-        measurementId: "G-N47MB1FNLF"
+        appId: "1:123786539122:web:0fd5b0a4008f51778852eb",
+        measurementId: "G-DDKVPE6S41"
     };
 
     // Initialize Firebase
@@ -270,11 +270,10 @@
         if (user) {
             navBtn.innerText = "Logout";
             navBtn.onclick = logoutUser;
-            loadApps(); // Load database once user is authenticated
+            loadApps(); 
         } else {
             navBtn.innerText = "Login";
             navBtn.onclick = () => openModal('authModal');
-            // If not logged in, show prompt or empty state so rules don't block silently
             document.getElementById('appList').innerHTML = '<div style="text-align:center; padding:40px; color:#5f6368; font-size:14px;">Please <span style="color:#1a73e8; cursor:pointer; font-weight:600;" onclick="openModal(\'authModal\')">Login / Sign Up</span> to view and download apps.</div>';
             document.getElementById('appCount').innerText = "0 Apps";
         }
