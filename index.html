@@ -204,13 +204,21 @@
     </div>
 </div>
 
-<!-- Upload Modal -->
+<!-- Upload Modal with Catbox Integration -->
 <div id="uploadModal" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header-flex">
             <h3 style="font-size: 18px; font-weight: 600;">Publish New APK</h3>
             <button class="close-btn" onclick="closeModal('uploadModal')">&times;</button>
         </div>
+
+        <!-- Catbox Quick Upload Widget -->
+        <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px dashed #dadce0;">
+            <label style="margin-top:0; color:#1a73e8;">📁 Upload File to Catbox (Get Link)</label>
+            <input type="file" id="catboxFile" style="margin-top: 6px; padding: 6px; background: #fff;">
+            <button type="button" onclick="uploadToCatbox()" style="margin-top: 8px; width: 100%; padding: 8px; background: #34a853; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">Upload to Catbox & Copy URL</button>
+        </div>
+
         <form id="apkForm" onsubmit="publishApp(event)">
             <label>App Name</label>
             <input type="text" id="appName" required placeholder="Enter App Name">
@@ -219,7 +227,7 @@
             <label>App Icon URL</label>
             <input type="url" id="appIcon" placeholder="https://..." required>
             <label>Direct APK Download Link</label>
-            <input type="url" id="appLink" required placeholder="https://...">
+            <input type="url" id="appLink" required placeholder="https://files.catbox.moe/...">
             <label>App Size (e.g. 25 MB)</label>
             <input type="text" id="appSize" required placeholder="15 MB">
             <label>Category</label>
@@ -327,6 +335,39 @@
             return;
         }
         openModal('uploadModal');
+    }
+
+    // Catbox Direct File Upload Function
+    function uploadToCatbox() {
+        let fileInput = document.getElementById('catboxFile');
+        if (fileInput.files.length === 0) {
+            alert("Pehle koi file select karein!");
+            return;
+        }
+
+        let file = fileInput.files[0];
+        let formData = new FormData();
+        formData.append('reqtype', 'fileupload');
+        formData.append('fileToUpload', file);
+
+        alert("Uploading to Catbox, please wait...");
+
+        fetch('https://catbox.moe/user/api.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(url => {
+            if (url.startsWith('http')) {
+                document.getElementById('appLink').value = url.trim();
+                alert("File Uploaded Successfully! Link added to APK Download Link.");
+            } else {
+                alert("Upload failed. Try again.");
+            }
+        })
+        .catch(error => {
+            alert("Error: " + error);
+        });
     }
 
     // Real-time listener from Firebase Database
