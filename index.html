@@ -173,7 +173,7 @@
             </div>
         </div>
 
-        <a id="detailDownloadBtn" class="modal-install-btn">Install</a>
+        <a id="detailDownloadBtn" class="modal-install-btn" target="_blank" rel="noopener noreferrer">Install</a>
 
         <div class="modal-desc-title">About this app</div>
         <div id="detailsDesc" class="modal-desc-text">Fast and direct installable APK file.</div>
@@ -265,18 +265,6 @@
         });
     }
 
-    // Force open in external browser to ensure stable download
-    function downloadApk(url, id) {
-        incrementDownload(id);
-        let a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-
     function filterApps() {
         let query = document.getElementById('searchInput').value.toLowerCase();
         let filtered = appData.filter(app => {
@@ -308,7 +296,7 @@
                     </div>
                 </div>
                 <div class="app-action-box" onclick="event.stopPropagation()">
-                    <span class="install-pill" onclick="downloadApk('${app.appLink}', '${app.id}')">Install</span>
+                    <a href="${app.appLink}" class="install-pill" target="_blank" rel="noopener noreferrer" onclick="incrementDownload('${app.id}')">Install</a>
                     <button class="delete-link" onclick="deleteApp('${app.id}')">Delete</button>
                 </div>
             </div>
@@ -341,10 +329,10 @@
         document.getElementById('detailsSize').innerText = app.appSize || '15 MB';
         document.getElementById('detailsDesc').innerText = app.appDesc || 'Fast and direct installable APK file.';
         
-        // Modal install button action
         let downloadBtn = document.getElementById('detailDownloadBtn');
+        downloadBtn.href = app.appLink;
         downloadBtn.onclick = function() {
-            downloadApk(app.appLink, app.id);
+            incrementDownload(app.id);
         };
 
         openModal('detailsModal');
